@@ -11,12 +11,12 @@
 ##################################################################################################################################################################
 ##################################################################################################################################################################
 import numpy as np
-from functions import *
+from functions.functions import *
 from IPython import display
 import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import mean_squared_error as mse
-from TrainCnn import MovingBlurCnn
+from Cnn import MovingBlurCnn
 from keras.models import Sequential,model_from_json
 from keras.layers.convolutional import Convolution2D,MaxPooling2D
 from keras.layers.core import Activation,Flatten,Dense
