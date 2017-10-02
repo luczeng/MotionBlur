@@ -1,37 +1,100 @@
-from functions import *
-import matplotlib.pyplot as plt
-import scipy.misc as misc
-import cv2
+##################################################################################################################################################################
+##################################################################################################################################################################
+#Predicts the angle of a linear motion blur
+#
+#Usage :
+#	-l (--load_model) : 1 or 0, loads pre-trained model
+#	-s (--save_model) : 1 or 0, saves model
+#	-p (--path)		  : path to the model to be loaded or saved
+#
+#Luc Zeng
+##################################################################################################################################################################
+##################################################################################################################################################################
 import numpy as np
+from functions import *
+from IPython import display
+import matplotlib.pyplot as plt
+from sklearn.cross_validation import train_test_split
+from sklearn.metrics import mean_squared_error as mse
+from TrainCnn import MovingBlurCnn
+from keras.models import Sequential,model_from_json
+from keras.layers.convolutional import Convolution2D,MaxPooling2D
+from keras.layers.core import Activation,Flatten,Dense
+import cv2, argparse
 
-I = cv2.imread("lena.jpeg")
-I = cv2.cvtColor(I, cv2.COLOR_BGR2GRAY)
-L = 10
-theta = 60
-Lambda =1
+##################################################################################################################################################################
+##################################################################################################################################################################
+#PARAMETERS
+NAngles = 40
+L = 15
+nb_epoch = 512
 
-def forceAspect(ax,aspect=1):
-    im = ax.get_images()
-    extent =  im[0].get_extent()
-    ax.set_aspect(abs((extent[1]-extent[0])/(extent[3]-extent[2]))/aspect)
+##################################################################################################################################################################
+##################################################################################################################################################################
+#Argument parser
+ap = argparse.ArgumentParser()
+ap.add_argument("-s","--save_model",type=int,default = 0,help="save weights or not")
+ap.add_argument("-l","--load_model",type=int,default=0,help="load model")
+ap.add_argument("-p", "--path", type=str,help="path to model file",default ="empty")
+args = vars(ap.parse_args())
 
-im = Image(I)
-kernel = MotionBlur(theta,L)
-blurredIm = im.LinearBlur(50,9,kernel)
-UnblurredIm = Wiener(blurredIm.image, kernel, Lambda)
-print(type(im))
-print(UnblurredIm)
+if (args["save_model"] == 1 and args["path"] == "empty") or (args["load_model"] == 1 and args["path"] == "empty"):
+	error("\nSUPPLY WEIGHT PATH\n")
 
-f, (ax1, ax2,ax3) = plt.subplots(1, 3, sharey=True)
-ax1.imshow(im.image,aspect = 'auto',cmap='gray')
-ax2.imshow(blurredIm.image,aspect = 'auto',cmap='gray')
-ax3.imshow(UnblurredIm,aspect = 'auto',cmap='gray')
+##################################################################################################################################################################
+#Generate blur
+In = cv2.imread("lena.jpeg",0)
+RotatedIm = Rotations(In,L,NAngles)
+RotatedIm.Apply()
 
-forceAspect(ax1,aspect=1)
-forceAspect(ax2,aspect=1)
-forceAspect(ax3,aspect=1)
+data = RotatedIm.Out
 
-plt.tight_layout()
+#Reshape (add empty channel)
+data = data[:,:,np.newaxis,:] #Here we should probably normalize the data
+data = np.rollaxis(data,3)
+angles = np.array(RotatedIm.Angles)
+angles = angles[:,np.newaxis]
+
+#Separate data into training and testing
+(X_train,X_test,y_train,y_test) = train_test_split(data,angles,test_size = 0.33)
+
+
+##################################################################################################################################################################
+
+print("[Info] Training size :{}\nTraining label size {}\n  ".format(X_train.shape,len(y_train)))
+
+if args["load_model"] == 0:
+	model = MovingBlurCnn.build(X_train.shape[1], X_train.shape[2], X_train.shape[3])
+	model.compile(loss = 'mean_absolute_error',optimizer = 'rmsprop')
+	model.fit(X_train,y_train,nb_epoch = nb_epoch,batch_size = 5)
+	if args["save_model"] == 1:
+		model_json = model.to_json()
+		with open("models" + args["path"]+".json","w") as json_file:
+			json_file.write(model_json)
+		model.save_weights("models" + args["path"]+".h5", overwrite=True)
+ 
+else:
+	json_file = open("models" + args["path"]+".json",'r')
+	model_json = json_file.read()
+	json_file.close()
+	model = model_from_json(model_json)
+	model.load_weights("models" + args["path"]+".h5")
+
+print(model.summary())
+
+
+##################################################################################################################################################################
+prediction = model.predict(X_test) 
+print(np.c_[prediction,y_test])
+print(np.sqrt(mse(prediction,y_test)))
+
+'''
+plt.scatter(np.arange(0,y_test.shape[0]),y_test,c ='b')
+plt.scatter(np.arange(0,y_test.shape[0]),prediction,c ='r')
 plt.show()
-mng = plt.get_current_fig_manager()
-mng.frame.Maximize(True)
+'''
+
+
+
+
+
