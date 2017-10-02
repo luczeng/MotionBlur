@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.widgets
 import matplotlib.patches
 import mpl_toolkits.axes_grid1
+import math
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -255,3 +256,11 @@ class PageSlider(matplotlib.widgets.Slider):
 			return
 		self.set_val(i)
 		self._colorize(i)
+
+##################################################################################################################################
+##################################################################################################################################
+def draw_line(x,y,angle,length):
+  cartesianAngleRadians = (450-angle)*math.pi/180.0
+  terminus_x = x + length * math.cos(cartesianAngleRadians)
+  terminus_y = y + length * math.sin(cartesianAngleRadians)
+  return x,y,terminus_x,terminus_y

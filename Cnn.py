@@ -20,9 +20,9 @@ class MovingBlurCnn:
 		model.add(Activation("relu"))
 		model.add(MaxPooling2D(pool_size=(2,2),strides=(2,2)))
 
-		model.add(Convolution2D(10,9,9,border_mode="same"))
+		model.add(Convolution2D(15,9,9,border_mode="same"))
 		model.add(Activation("relu"))
-		model.add(Convolution2D(10,9,9,border_mode="same"))
+		model.add(Convolution2D(15,9,9,border_mode="same"))
 		model.add(Activation("relu"))
 		model.add(MaxPooling2D(pool_size=(2,2),strides=(2,2)))
 

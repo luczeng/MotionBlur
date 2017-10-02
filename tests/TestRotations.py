@@ -4,9 +4,9 @@
 # L 		:		length of the blur
 import numpy as np
 import cv2, time
-from functions import *
 from IPython import display
 import matplotlib.pyplot as plt
+from functions.functions import *
 
 NAngles = 20
 L = 15

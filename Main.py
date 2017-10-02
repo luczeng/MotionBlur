@@ -87,19 +87,27 @@ print(model.summary())
 ##################################################################################################################################################################
 # Show results
 prediction = model.predict(X_test) 
-print(np.c_[prediction,y_test])
-print(np.sqrt(mse(prediction,y_test)))
+print(np.c_[prediction,y_test]), print("\n")
+print("MSE :{} \n",np.sqrt(mse(prediction,y_test)))
 
 k = sorted(range(len(prediction)), key=lambda k: prediction[k])
-print(k)
 
 fig = plt.figure(figsize=(10,6.5))
+gs = matplotlib.gridspec.GridSpec(1,2,width_ratios = [1,1])
+ax1 = plt.subplot(gs[0])
+ax1.scatter(np.arange(0,len(k)),y_test[k],c ='b')
+ax1.scatter(np.arange(0,len(k)),prediction[k],c ='r')
+ax1.legend(("Ground truth","Predictions"))
+ax1.set_ylabel("Angles (in degrees)")
 ax_list = fig.axes
-print(ax_list)
-plt.scatter(np.arange(0,len(k)),y_test[k],c ='b')
-plt.scatter(np.arange(0,len(k)),prediction[k],c ='r')
-plt.legend(("Ground truth","Predictions"))
-plt.ylabel("Degrees")
+
+ax2 = plt.subplot(gs[1])
+ax2.imshow(X_test[0,:,:,0])
+ax2.set_title("Blurry image and estimated angle")
+[x,y,terminus_x,terminus_y] = draw_line(30,30,prediction[0],20)
+ax2.plot([x, terminus_x],[y,terminus_y],'r')
+[x,y,terminus_x,terminus_y] = draw_line(60,30,y_test[0],20)
+ax2.plot([x, terminus_x],[y,terminus_y],'b')
 
 #cv2.putText(fig, "test", (5, 20),
 #		cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
