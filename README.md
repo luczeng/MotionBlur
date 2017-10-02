@@ -1,2 +1,0 @@
-# MovingBlur
-# MotionBlur
