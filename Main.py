@@ -17,10 +17,11 @@ import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import mean_squared_error as mse
 from Cnn import MovingBlurCnn
+import cv2
 from keras.models import Sequential,model_from_json
 from keras.layers.convolutional import Convolution2D,MaxPooling2D
 from keras.layers.core import Activation,Flatten,Dense
-import cv2, argparse
+import argparse
 
 ##################################################################################################################################################################
 ##################################################################################################################################################################
@@ -69,30 +70,42 @@ if args["load_model"] == 0:
 	model.fit(X_train,y_train,nb_epoch = nb_epoch,batch_size = 5)
 	if args["save_model"] == 1:
 		model_json = model.to_json()
-		with open("models" + args["path"]+".json","w") as json_file:
+		with open("models/" + args["path"]+".json","w") as json_file:
 			json_file.write(model_json)
-		model.save_weights("models" + args["path"]+".h5", overwrite=True)
+		model.save_weights("models/" + args["path"]+".h5", overwrite=True)
  
 else:
-	json_file = open("models" + args["path"]+".json",'r')
+	json_file = open("models/" + args["path"]+".json",'r')
 	model_json = json_file.read()
 	json_file.close()
 	model = model_from_json(model_json)
-	model.load_weights("models" + args["path"]+".h5")
+	model.load_weights("models/" + args["path"]+".h5")
 
 print(model.summary())
 
 
 ##################################################################################################################################################################
+# Show results
 prediction = model.predict(X_test) 
 print(np.c_[prediction,y_test])
 print(np.sqrt(mse(prediction,y_test)))
 
-'''
-plt.scatter(np.arange(0,y_test.shape[0]),y_test,c ='b')
-plt.scatter(np.arange(0,y_test.shape[0]),prediction,c ='r')
+k = sorted(range(len(prediction)), key=lambda k: prediction[k])
+print(k)
+
+fig = plt.figure(figsize=(10,6.5))
+ax_list = fig.axes
+print(ax_list)
+plt.scatter(np.arange(0,len(k)),y_test[k],c ='b')
+plt.scatter(np.arange(0,len(k)),prediction[k],c ='r')
+plt.legend(("Ground truth","Predictions"))
+plt.ylabel("Degrees")
+
+#cv2.putText(fig, "test", (5, 20),
+#		cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
+
+
 plt.show()
-'''
 
 
 
