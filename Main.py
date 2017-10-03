@@ -61,7 +61,7 @@ angles = angles[:,np.newaxis]
 
 
 ##################################################################################################################################################################
-
+#Define model and train
 print("[Info] Training size :{}\nTraining label size {}\n  ".format(X_train.shape,len(y_train)))
 
 if args["load_model"] == 0:
@@ -92,8 +92,8 @@ print("MSE :{} \n",np.sqrt(mse(prediction,y_test)))
 
 k = sorted(range(len(prediction)), key=lambda k: prediction[k])
 
-fig = plt.figure(figsize=(10,6.5))
-gs = matplotlib.gridspec.GridSpec(1,2,width_ratios = [1,1])
+fig = plt.figure(figsize=(12,8.5))
+gs = matplotlib.gridspec.GridSpec(1,2,width_ratios = [1,2])
 ax1 = plt.subplot(gs[0])
 ax1.scatter(np.arange(0,len(k)),y_test[k],c ='b')
 ax1.scatter(np.arange(0,len(k)),prediction[k],c ='r')
@@ -104,14 +104,11 @@ ax_list = fig.axes
 ax2 = plt.subplot(gs[1])
 ax2.imshow(X_test[0,:,:,0])
 ax2.set_title("Blurry image and estimated angle")
-[x,y,terminus_x,terminus_y] = draw_line(30,30,prediction[0],20)
-ax2.plot([x, terminus_x],[y,terminus_y],'r')
-[x,y,terminus_x,terminus_y] = draw_line(60,30,y_test[0],20)
-ax2.plot([x, terminus_x],[y,terminus_y],'b')
-
-#cv2.putText(fig, "test", (5, 20),
-#		cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
-
+[x,y] = vector_coord(y_test[0],35)
+ax2.quiver(30,30,x,y,color ='b')
+[x,y] = vector_coord(prediction[0],35)
+ax2.quiver(60,30,x,y,color = 'r')
+ax2.legend(("True direction","Estimated direction"))
 
 plt.show()
 

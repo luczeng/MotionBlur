@@ -259,8 +259,8 @@ class PageSlider(matplotlib.widgets.Slider):
 
 ##################################################################################################################################
 ##################################################################################################################################
-def draw_line(x,y,angle,length):
+def vector_coord(angle,length):
   cartesianAngleRadians = (450-angle)*math.pi/180.0
-  terminus_x = x + length * math.cos(cartesianAngleRadians)
-  terminus_y = y + length * math.sin(cartesianAngleRadians)
-  return x,y,terminus_x,terminus_y
+  x =  length * math.cos(cartesianAngleRadians)
+  y =  length * math.sin(cartesianAngleRadians)
+  return x,y

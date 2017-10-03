@@ -1,12 +1,18 @@
+##################################################################################################################################################################
+##################################################################################################################################################################
 #Show the result of applying the motion blur with several angles
 #
 # NAngles 	:		number of angles, uniformly generated between 0 and 180°
 # L 		:		length of the blur
+##################################################################################################################################################################
+##################################################################################################################################################################
 import numpy as np
 import cv2, time
 from IPython import display
 import matplotlib.pyplot as plt
-from functions.functions import *
+import sys
+sys.path.insert(0, './functions')
+from functions import *
 
 NAngles = 20
 L = 15
@@ -19,7 +25,7 @@ RotatedIm.Apply()
 
 ##################################################################################################################################################################
 #Display
-fig= plt.figure(figsize=(10,6.5))
+fig= plt.figure(figsize=(11.5,7.5))
 gs = matplotlib.gridspec.GridSpec(1, 2, width_ratios=[6, 1]) 
 ax_slider = fig.add_axes([0.1, 0.05, 0.8, 0.04])
 slider = PageSlider(ax_slider, 'Page', NAngles, activecolor="orange")
