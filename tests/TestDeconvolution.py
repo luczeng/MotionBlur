@@ -16,9 +16,9 @@ from functions import *
 #Code
 I = cv2.imread("lena.jpeg")
 I = cv2.cvtColor(I, cv2.COLOR_BGR2GRAY)
-L = 11
-theta = 60
-Lambda =1
+L = 23
+theta = 30
+Lambda = 0.1
 
 def forceAspect(ax,aspect=1):
     im = ax.get_images()

@@ -26,9 +26,9 @@ import argparse
 ##################################################################################################################################################################
 ##################################################################################################################################################################
 #PARAMETERS
-NAngles = 40
+NAngles = 100
 L = 15
-nb_epoch = 512
+nb_epoch = 2000
 
 ##################################################################################################################################################################
 ##################################################################################################################################################################
@@ -66,8 +66,8 @@ print("[Info] Training size :{}\nTraining label size {}\n  ".format(X_train.shap
 
 if args["load_model"] == 0:
 	model = MovingBlurCnn.build(X_train.shape[1], X_train.shape[2], X_train.shape[3])
-	model.compile(loss = 'mean_absolute_error',optimizer = 'rmsprop')
-	model.fit(X_train,y_train,nb_epoch = nb_epoch,batch_size = 5)
+	model.compile(loss = 'mean_absolute_error',optimizer = 'adam')
+	model.fit(X_train,y_train,nb_epoch = nb_epoch,batch_size = 6)
 	if args["save_model"] == 1:
 		model_json = model.to_json()
 		with open("models/" + args["path"]+".json","w") as json_file:
@@ -93,7 +93,7 @@ print("MSE :{} \n",np.sqrt(mse(prediction,y_test)))
 k = sorted(range(len(prediction)), key=lambda k: prediction[k])
 
 fig = plt.figure(figsize=(12,8.5))
-gs = matplotlib.gridspec.GridSpec(1,2,width_ratios = [1,2])
+gs = matplotlib.gridspec.GridSpec(1,2,width_ratios = [1,1])
 ax1 = plt.subplot(gs[0])
 ax1.scatter(np.arange(0,len(k)),y_test[k],c ='b')
 ax1.scatter(np.arange(0,len(k)),prediction[k],c ='r')
@@ -104,12 +104,13 @@ ax_list = fig.axes
 ax2 = plt.subplot(gs[1])
 ax2.imshow(X_test[0,:,:,0])
 ax2.set_title("Blurry image and estimated angle")
-[x,y] = vector_coord(y_test[0],35)
+[x,y] = vector_coord(y_test[0],45)
 ax2.quiver(30,30,x,y,color ='b')
-[x,y] = vector_coord(prediction[0],35)
+[x,y] = vector_coord(prediction[0],45)
 ax2.quiver(60,30,x,y,color = 'r')
 ax2.legend(("True direction","Estimated direction"))
 
+print(y_test[0])
 plt.show()
 
 
