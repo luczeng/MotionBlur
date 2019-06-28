@@ -8,10 +8,10 @@
 ##################################################################################################################################################################
 import numpy as np
 import cv2, time
-from IPython import display
+#from IPython import display
 import matplotlib.pyplot as plt
 import sys
-sys.path.insert(0, './functions')
+sys.path.insert(0, '../utils')
 from functions import *
 
 NAngles = 20

@@ -8,17 +8,16 @@ import math
 from scipy.integrate import dblquad,quad
 import matplotlib.pyplot as plt
 import sys
-sys.path.insert(0, "./functions/")
+sys.path.insert(0, "../utils")
 from functions import *
 
 ##################################################################################################################################################################
 #Computation
-theta = 20
+theta = 35
 L = 23
 
 kernel = np.zeros([L,L])
 x = np.arange(0,L,1) - int(L/2)
-print(x)
 X,Y = np.meshgrid(x,x)
 
 for i in range(x.shape[0]):

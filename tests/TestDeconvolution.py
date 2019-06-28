@@ -8,7 +8,7 @@ import scipy.misc as misc
 import cv2
 import numpy as np
 import sys
-sys.path.insert(0, "./functions/")
+sys.path.insert(0, "../utils")
 from functions import *
 
 

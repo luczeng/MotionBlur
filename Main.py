@@ -11,17 +11,18 @@
 ##################################################################################################################################################################
 ##################################################################################################################################################################
 import numpy as np
-from functions.functions import *
-from IPython import display
+#from IPython import display
 import matplotlib.pyplot as plt
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as mse
+import cv2,sys
+sys.path.append('utils')
 from Cnn import MovingBlurCnn
-import cv2
+from utils.functions import *
 from keras.models import Sequential,model_from_json
 from keras.layers.convolutional import Convolution2D,MaxPooling2D
 from keras.layers.core import Activation,Flatten,Dense
-import argparse
+from config import get_config
 
 ##################################################################################################################################################################
 ##################################################################################################################################################################
@@ -33,18 +34,16 @@ nb_epoch = 2000
 ##################################################################################################################################################################
 ##################################################################################################################################################################
 #Argument parser
-ap = argparse.ArgumentParser()
-ap.add_argument("-s","--save_model",type=int,default = 0,help="save weights or not")
-ap.add_argument("-l","--load_model",type=int,default=0,help="load model")
-ap.add_argument("-p", "--path", type=str,help="path to model file",default ="empty")
-args = vars(ap.parse_args())
+cfg = get_config(sys.argv)
 
-if (args["save_model"] == 1 and args["path"] == "empty") or (args["load_model"] == 1 and args["path"] == "empty"):
-	error("\nSUPPLY WEIGHT PATH\n")
+#if (cfg.["save_model"] == 1 and cfg.["path"] == "empty") or (cfg.["load_model"] == 1 and cfg.["path"] == "empty"):
+#	error("\nSUPPLY WEIGHT PATH\n")
 
 ##################################################################################################################################################################
 #Generate blur
-In = cv2.imread("lena.jpeg",0)
+print("reached")
+In = cv2.imread(cfg.img_path,0)
+print(In.shape)
 RotatedIm = Rotations(In,L,NAngles)
 RotatedIm.Apply()
 
@@ -64,22 +63,22 @@ angles = angles[:,np.newaxis]
 #Define model and train
 print("[Info] Training size :{}\nTraining label size {}\n  ".format(X_train.shape,len(y_train)))
 
-if args["load_model"] == 0:
+if cfg.load_model == 0:
 	model = MovingBlurCnn.build(X_train.shape[1], X_train.shape[2], X_train.shape[3])
 	model.compile(loss = 'mean_absolute_error',optimizer = 'adam')
 	model.fit(X_train,y_train,nb_epoch = nb_epoch,batch_size = 6)
-	if args["save_model"] == 1:
+	if cfg.save_model == 1:
 		model_json = model.to_json()
-		with open("models/" + args["path"]+".json","w") as json_file:
+		with open("models/" + cfg.path+".json","w") as json_file:
 			json_file.write(model_json)
-		model.save_weights("models/" + args["path"]+".h5", overwrite=True)
+		model.save_weights("models/" + cfg.path+".h5", overwrite=True)
  
 else:
-	json_file = open("models/" + args["path"]+".json",'r')
+	json_file = open(cfg.path+".json",'r')
 	model_json = json_file.read()
 	json_file.close()
 	model = model_from_json(model_json)
-	model.load_weights("models/" + args["path"]+".h5")
+	model.load_weights(cfg.path+".h5")
 
 print(model.summary())
 
@@ -87,7 +86,7 @@ print(model.summary())
 ##################################################################################################################################################################
 # Show results
 prediction = model.predict(X_test) 
-print(np.c_[prediction,y_test]), print("\n")
+print(np.c_[prediction,y_test],"\n")
 print("MSE :{} \n",np.sqrt(mse(prediction,y_test)))
 
 k = sorted(range(len(prediction)), key=lambda k: prediction[k])
