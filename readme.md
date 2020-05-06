@@ -9,6 +9,18 @@ See the wiki for some visual insights.
 
 The blur is for the moment linear. Currently, we only try to estimate the angle, later we'll switch to the length.
 
+# Installation
+In your favorite conda environment, type:
+~~~
+    pip install -e .
+~~~
+
+For development, install the test libraries as follow:
+
+~~~
+    pip install -e .[TEST_SUITE]
+~~~
+
 # Requirements
 The project is coded using Keras with a Tensorflow backend. We use python3. You can install the dependencies using `pip install requirements.txt`.  
 We currently use opencv but will most likely change to lighter library in the future.

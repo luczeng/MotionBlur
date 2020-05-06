@@ -1,2 +1,9 @@
+# Python stuff
 *.pyc
 __pycache__
+
+# Mac stuff
+*.DS_Store
+
+# Pip stuff
+motion_blur.egg-info
