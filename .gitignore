@@ -7,3 +7,6 @@ __pycache__
 
 # Pip stuff
 motion_blur.egg-info
+
+# Vim stuff
+*.swp

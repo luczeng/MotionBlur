@@ -8,8 +8,8 @@ import math
 from scipy.integrate import dblquad, quad
 import matplotlib.pyplot as plt
 import sys
-
-from motion_blur.libs.forward_models.functions import LineIntegral, Formatter
+from motion_blur.libs.forward_models.kernels.motion import LineIntegral
+from motion_blur.libs.utils.display_utils import Formatter
 
 
 ##################################################################################################################################################################
