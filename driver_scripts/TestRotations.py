@@ -1,30 +1,29 @@
-##################################################################################################################################################################
-##################################################################################################################################################################
+##########################################################################################################################
 # Show the result of applying the motion blur with several angles
 #
 # NAngles 	:		number of angles, uniformly generated between 0 and 180°
 # L 		:		length of the blur
-##################################################################################################################################################################
-##################################################################################################################################################################
+##########################################################################################################################
 import numpy as np
 import cv2, time
 
 # from IPython import display
 import matplotlib.pyplot as plt
 import sys
-from motion_blur.libs.forward_models.functions import Rotations, PageSlider
+from motion_blur.libs.utils.display_utils import Rotations
+from motion_blur.libs.utils.display_utils import PageSlider
 from matplotlib.gridspec import GridSpec
 
 NAngles = 20
 L = 15
 
-##################################################################################################################################################################
+##########################################################################################################################
 # Generate blur
 In = cv2.imread("imgs/lena.tiff", 0)
 RotatedIm = Rotations(In, L, NAngles)
 RotatedIm.Apply()
 
-##################################################################################################################################################################
+##########################################################################################################################
 # Display
 fig = plt.figure(figsize=(11.5, 7.5))
 gs = GridSpec(1, 2, width_ratios=[6, 1])
@@ -33,13 +32,13 @@ slider = PageSlider(ax_slider, "Page", NAngles, activecolor="orange")
 ax1 = plt.subplot(gs[0])
 im1 = ax1.imshow(RotatedIm.Out[:, :, 0], cmap="gray")
 ax2 = plt.subplot(gs[1])
-im2 = ax2.imshow(RotatedIm.Kernels[:, :, 0], cmap="gray")
+im2 = ax2.imshow(RotatedIm.Kernels[0].kernel, cmap="gray")
 
 
 def update(val):
     i = int(slider.val)
     im1.set_data(RotatedIm.Out[:, :, i])
-    im2.set_data(RotatedIm.Kernels[:, :, i])
+    im2.set_data(RotatedIm.Kernels[i].kernel)
 
 
 slider.on_changed(update)
