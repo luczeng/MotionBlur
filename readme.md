@@ -1,13 +1,19 @@
-# Intro 
-A small project to estimate the motion blur of a camera using a convolutional neural network, to be later used to calibrate a deconvolution algorithm.
+# Description
+This project aims at removing motion blur originating from the motion or shake of hand-held cameras. It aims to work blindly, ie no knowledge of the blur is required. The motion blur is estimated using a convolutional neural network, and is later used to calibrate a deconvolution algorithm.  
 
-There are two parts to this project :   
-	- the Image Processing Part with the deconvolution algorithms  
-	- the Deep Learning part that aims to estimate the blur  
+The project consists of two distinct parts:  
+	- the image processing section, with the deconvolution algorithms and the forward models.  
+	- the blur estimation section using a neural network.  
+	
+See the [wiki](https://github.com/luczeng/MotionBlur/wiki) for some visual insights.  
 
-See the wiki for some visual insights.
+The library is coded in Python3.
 
-The blur is for the moment linear. Currently, we only try to estimate the angle, later we'll switch to the length.
+# News
+- As of May 2020, the project restarts! We move from tensorflow to pytorch. We will extend the motion blur models to space variant kernels. We plan to extend to TV deblurring. We will try better backbones (resnets).
+
+# Progress
+- As of now May 2020, we support deblurring of *linear blur* using a Wiener filter
 
 # Installation
 In your favorite conda environment, type:
@@ -21,17 +27,18 @@ For development, install the test libraries as follow:
     pip install -e .[TEST_SUITE]
 ~~~
 
-# Requirements
-The project is coded using Keras with a Tensorflow backend. We use python3. You can install the dependencies using `pip install requirements.txt`.  
-We currently use opencv but will most likely change to lighter library in the future.
-
 # Implementation
 - The linear kernel is obtained by integrating a line over one pixel so as to take into account discretization effects.
 - The deconvolution is a Wiener filter. We plan to add a TV deconvolution.
-- Data and training: this project has been implemented on my personal computer that does not possess a GPU and has limited RAM. Therefore the training data consisted of one image linearly blurred at random angles (but constant intensity blur). This of course yields less than optimal performances on real life data but provides notheless a proof of concept. 
+- Data and training:  WIP
 
 # Usage
-- To see visual results over randomly sampled angles: Run `python Main.py -l 1 -p models/AngleWeights5`
-- Test scripts: go to `tests` and run the scripts to see what the linear blue does, how the kernel is computed and how deconvolution works with a given kernel.
+- WIP
 
+# Performance
+<p  align="center">
+	<img src="imgs/results.jpg" width="400" alt="Results">
+	<br>
+	<em> Estimated angles for a linear motion blur </em>
+</p>
 
