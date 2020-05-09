@@ -4,10 +4,10 @@ from motion_blur.libs.base.base_linop import linop
 
 
 class Convolution(linop):
-    def __init__(self,kernel: np.ndarray):
+    def __init__(self, kernel: np.ndarray):
         self.kernel = kernel
 
-    def __mul__(self,img: np.ndarray) -> np.ndarray:
+    def __mul__(self, img: np.ndarray) -> np.ndarray:
         """
             Performs the convolution of the input image with a kernel using Fourier transforms.
             Zero pads the convolution kernel

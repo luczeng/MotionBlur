@@ -20,10 +20,11 @@ class Image:
 
         return out
 
+
 ##################################################################################################################################
 def vector_coord(angle, length):
     """
-        ???
+        TODO
     """
     cartesianAngleRadians = (450 - angle) * math.pi / 180.0
     x = length * math.cos(cartesianAngleRadians)
