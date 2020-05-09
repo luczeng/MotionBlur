@@ -2,10 +2,12 @@ import matplotlib.widgets
 import matplotlib.patches
 import mpl_toolkits.axes_grid1
 import numpy as np
-from motion_blur.libs.forward_models.kernels.motion import MotionKernel
-from motion_blur.libs.forward_models.linops.convolution import Convolution
+
 
 class Formatter(object):
+    """
+        TODO: add description
+    """
     def __init__(self, im):
         self.im = im
 
@@ -15,6 +17,9 @@ class Formatter(object):
 
 
 class PageSlider(matplotlib.widgets.Slider):
+    """
+        TODO: add description
+    """
     def __init__(
         self, ax, label, numpages=10, valinit=0, valfmt="%1d", closedmin=True, closedmax=True, dragging=True, **kwargs
     ):
@@ -90,18 +95,3 @@ class PageSlider(matplotlib.widgets.Slider):
         self._colorize(i)
 
 
-class Rotations:
-    """ Helper class to generate rotation kernel at several angles and length"""
-    def __init__(self, image, L, NAngles):
-        self.image = image
-        self.NAngles = NAngles
-        self.L = L
-        self.Angles = sorted(np.random.uniform(0, 180, NAngles))
-
-    def Apply(self):
-        self.Out = np.zeros((self.image.shape[0], self.image.shape[1], self.NAngles))
-        self.Kernels = [None]*self.NAngles
-
-        for i in range(self.NAngles):
-            self.Kernels[i] = Convolution(MotionKernel(self.Angles[i], self.L))
-            self.Out[:, :, i] = self.Kernels[i]*self.image

@@ -1,5 +1,3 @@
-##################################################################################################################################################################
-##################################################################################################################################################################
 # Predicts the angle of a linear motion blur
 #
 # Usage :
@@ -8,16 +6,11 @@
 # 	-p (--path)		  : path to the model to be loaded or saved
 #
 # Luc Zeng
-##################################################################################################################################################################
-##################################################################################################################################################################
 import numpy as np
-
-# from IPython import display
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as mse
 import cv2, sys
-
 from motion_blur.libs.nn.Cnn import MovingBlurCnn
 from motion_blur.libs.forward_models.functions import *
 from keras.models import Sequential, model_from_json
@@ -25,22 +18,17 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.core import Activation, Flatten, Dense
 from config import get_config
 
-##################################################################################################################################################################
-##################################################################################################################################################################
 # PARAMETERS
 NAngles = 100
 L = 15
 nb_epoch = 2000
 
-##################################################################################################################################################################
-##################################################################################################################################################################
 # Argument parser
 cfg = get_config(sys.argv)
 
 # if (cfg.["save_model"] == 1 and cfg.["path"] == "empty") or (cfg.["load_model"] == 1 and cfg.["path"] == "empty"):
 # 	error("\nSUPPLY WEIGHT PATH\n")
 
-##################################################################################################################################################################
 # Generate blur
 print("reached")
 In = cv2.imread(cfg.img_path, 0)
@@ -60,7 +48,6 @@ angles = angles[:, np.newaxis]
 (X_train, X_test, y_train, y_test) = train_test_split(data, angles, test_size=0.33)
 
 
-##################################################################################################################################################################
 # Define model and train
 print("[Info] Training size :{}\nTraining label size {}\n  ".format(X_train.shape, len(y_train)))
 
@@ -84,7 +71,6 @@ else:
 print(model.summary())
 
 
-##################################################################################################################################################################
 # Show results
 prediction = model.predict(X_test)
 print(np.c_[prediction, y_test], "\n")
@@ -110,5 +96,4 @@ ax2.quiver(30, 30, x, y, color="b")
 ax2.quiver(60, 30, x, y, color="r")
 ax2.legend(("True direction", "Estimated direction"))
 
-print(y_test[0])
 plt.show()
