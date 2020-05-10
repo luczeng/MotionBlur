@@ -8,6 +8,7 @@ class Formatter(object):
     """
         TODO: add description
     """
+
     def __init__(self, im):
         self.im = im
 
@@ -20,6 +21,7 @@ class PageSlider(matplotlib.widgets.Slider):
     """
         TODO: add description
     """
+
     def __init__(
         self, ax, label, numpages=10, valinit=0, valfmt="%1d", closedmin=True, closedmax=True, dragging=True, **kwargs
     ):
@@ -93,5 +95,3 @@ class PageSlider(matplotlib.widgets.Slider):
             return
         self.set_val(i)
         self._colorize(i)
-
-

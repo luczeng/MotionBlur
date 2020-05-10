@@ -12,8 +12,8 @@ def motion_kernel(theta: float, L: float) -> np.ndarray:
         :param length of the kernel
         :return kernel: motion kernel
     """
-    kernel = np.zeros([L, L])
-    x = np.arange(0, L, 1) - int(L / 2)
+    kernel = np.zeros([int(L), int(L)])
+    x = np.arange(0, int(L), 1) - int(L / 2)
     X, Y = np.meshgrid(x, x)
 
     for i in range(x.shape[0]):
@@ -24,7 +24,7 @@ def motion_kernel(theta: float, L: float) -> np.ndarray:
     return kernel
 
 
-def pythagorean_theorem(corner_x :float, corner_y :float) -> float:
+def pythagorean_theorem(corner_x: float, corner_y: float) -> float:
     """
         Applies the pythagorean theorem to calculate the hypothenuse
         :param corner_x length of one corner
@@ -60,8 +60,7 @@ def line_integral(theta, x, y, pixel_half_width=0.5):
         if b >= 0 and beta >= 0 and TanTheta > 0:  # upper right quadrant
             if alpha <= TanTheta * a <= beta:  # pointing upward, case 1
                 if alpha <= TanTheta * b <= beta:
-                    L = pythagorean_theorem(b - a, TanTheta * b - TanTheta*a)
-                    print('here',L)
+                    L = pythagorean_theorem(b - a, TanTheta * b - TanTheta * a)
                 else:
                     L = pythagorean_theorem(beta / TanTheta - a, beta - TanTheta * a)
             elif a <= alpha / TanTheta <= b:  # pointing upward, case 2
