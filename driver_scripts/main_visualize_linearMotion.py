@@ -1,4 +1,4 @@
-import cv2 ,time
+import cv2, time
 import matplotlib.pyplot as plt
 from motion_blur.libs.utils.kernel_utils import Rotations
 from motion_blur.libs.utils.display_utils import PageSlider
@@ -27,11 +27,13 @@ im1 = ax1.imshow(RotatedIm.Out[:, :, 0], cmap="gray")
 ax2 = plt.subplot(gs[1])
 im2 = ax2.imshow(RotatedIm.Kernels[0].kernel, cmap="gray")
 
+
 def update(val):
     """ Updates the axis with the new kernel and blurred image """
     i = int(slider.val)
     im1.set_data(RotatedIm.Out[:, :, i])
     im2.set_data(RotatedIm.Kernels[i].kernel)
+
 
 slider.on_changed(update)
 plt.show()
