@@ -9,4 +9,4 @@ def test_forwardpass():
     mnet = MotionNet()
     x = mnet.forward(img)
 
-    assert x.shape == (3, 1)
+    assert x.shape == (3, 2)

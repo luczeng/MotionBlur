@@ -21,6 +21,8 @@ def motion_kernel(theta: float, L: float) -> np.ndarray:
             if pythagorean_theorem(X[i, j], Y[i, j]) < L / 2:
                 kernel[i, j] = line_integral(theta, X[i, j], -Y[i, j])
 
+    kernel = kernel / kernel.sum()
+
     return kernel
 
 
