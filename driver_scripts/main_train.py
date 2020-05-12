@@ -1,6 +1,4 @@
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error as mse
 import cv2, sys
 from motion_blur.libs.nn.motion_net import MotionNet
 from motion_blur.libs.forward_models.functions import *
