@@ -30,7 +30,7 @@ def parse_args():
 
 if __name__ == "__main__":
 
-    #
+    # Change those if you want to visualize different effects
     L_user = 10
     Theta_user = 45
 

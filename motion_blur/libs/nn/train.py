@@ -10,7 +10,6 @@ from motion_blur.libs.configs.read_config import parse_config
 import cv2
 import matplotlib.pyplot as plt
 from pathlib import Path
-import sys
 
 
 def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.yml"):
@@ -21,6 +20,9 @@ def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.
     # GPU
     if torch.cuda.is_available():
         net.to(device=torch.device("cuda"))
+        net_type = torch.cuda.FloatTensor
+    else:
+        net_type = torch.FloatTensor
 
     # Initlialization
     criterion = nn.MSELoss()
@@ -40,14 +42,14 @@ def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.
         start = 0
 
     # weights
-    weights = torch.tensor([1, 1]).type(torch.cuda.FloatTensor)
+    weights = torch.tensor([1, 1]).type(net_type)
 
     # Training loop
     for epoch in range(start, config.n_epoch):
 
         # Mini batch
-        mini_batch = torch.empty(config.mini_batch_size, 1, 512, 512).type(torch.cuda.FloatTensor)
-        gt = torch.empty(config.mini_batch_size, 2).type(torch.cuda.FloatTensor)
+        mini_batch = torch.empty(config.mini_batch_size, 1, 512, 512).type(net_type)
+        gt = torch.empty(config.mini_batch_size, 2).type(net_type)
         for i, x in enumerate(range(config.mini_batch_size)):
             # Randomly sample kernel
             L = config.L_min + torch.rand(1) * config.L_max
@@ -57,12 +59,12 @@ def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.
 
             # Blur image
             image = H * img
-            image = torch.tensor(image).type(torch.cuda.FloatTensor)
+            image = torch.tensor(image).type(net_type)
             # image = image / image.sum()
 
             mini_batch[i, 0, :, :] = image
-            gt[i, 0] = torch.tensor(theta).type(torch.cuda.FloatTensor)
-            gt[i, 1] = torch.tensor(L).type(torch.cuda.FloatTensor)
+            gt[i, 0] = torch.tensor(theta).type(net_type)
+            gt[i, 1] = torch.tensor(L).type(net_type)
 
         # mini_batch.to(device = torch.device("cuda"))
         # gt.to(device = torch.device("cuda"))
@@ -82,7 +84,8 @@ def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.
         running_loss += loss.item()
         if epoch % config.loss_period == (config.loss_period - 1):
             # Loss
-            print("[%d, %5d] loss: %.3f" % (epoch + 1, config.n_epoch, running_loss / 2000))
+            print("[%d, %5d] loss: %.3f" % (epoch + 1, config.n_epoch, running_loss / config.loss_period))
+            # ml_flow.log_metric(f"Training loss {config.loss_period} iterations",running_loss)
             running_loss = 0.0
 
             # Checkpoint

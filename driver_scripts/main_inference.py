@@ -37,8 +37,13 @@ if __name__ == "__main__":
 
     # Load model
     net = MotionNet()
-    net.load_state_dict(torch.load(path_to_model))
-    net.to(device=torch.device("cuda"))
+    if torch.cuda.is_available():
+        net.load_state_dict(torch.load(path_to_model))
+        net.to(device=torch.device("cuda"))
+        net_type = torch.cuda.FloatTensor
+    else:
+        net.load_state_dict(torch.load(path_to_model,map_location = torch.device("cpu")))
+        net_type = torch.FloatTensor
 
     # Randomly sample kernel
     L = config.L_min + torch.rand(1) * config.L_max
@@ -49,7 +54,7 @@ if __name__ == "__main__":
     # Blur image
     img = cv2.imread(config.test_dataset_path, 0)
     image = H * img
-    image = torch.tensor(image[None, None, :, :]).type(torch.cuda.FloatTensor)
+    image = torch.tensor(image[None, None, :, :]).type(net_type)
 
     # GPU
     net.zero_grad()
