@@ -5,7 +5,7 @@ TRAIN:
     LR: 0.0001
     L_max : 20
     L_min : 3
-    LOSS_PERIOD: 10
+    LOSS_PERIOD: 50
     MINI_BATCH_SIZE: 1
 TEST:
     TEST_DATASET_PATH: 'imgs/lena.tiff'

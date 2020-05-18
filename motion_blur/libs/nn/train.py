@@ -7,15 +7,20 @@ from motion_blur.libs.forward_models.kernels.motion import motion_kernel
 from motion_blur.libs.forward_models.linops.convolution import Convolution
 from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint, weighted_mse_loss
 from motion_blur.libs.configs.read_config import parse_config
+from motion_blur.libs.utils.mlflow_utils import log_loss
 import cv2
 import matplotlib.pyplot as plt
 from pathlib import Path
+import mlflow
 
 
 def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.yml"):
 
+    # mlflow.set_tracking_uri("https://community.cloud.databricks.com/?o=6871982750331239#mlflow/experiments/1722523684184964")
+    # mlflow.set_experiment("/Users/luc.zeng@hotmail.fr/Test")
     # Configs
     config = parse_config(path_to_config)
+    mlflow.log_artifact(path_to_config)
 
     # GPU
     if torch.cuda.is_available():
@@ -28,6 +33,7 @@ def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.
     criterion = nn.MSELoss()
     optimizer = optim.Adam(net.parameters(), lr=config.lr)
     running_loss = 0.0
+    loss_list = []
     img = cv2.imread(config.train_dataset_path, 0)
 
     Path(config.save_path).mkdir(parents=True, exist_ok=True)
@@ -85,11 +91,12 @@ def train(net, path_to_config: str = "motion_blur/libs/configs/config_motionnet.
         if epoch % config.loss_period == (config.loss_period - 1):
             # Loss
             print("[%d, %5d] loss: %.3f" % (epoch + 1, config.n_epoch, running_loss / config.loss_period))
-            # ml_flow.log_metric(f"Training loss {config.loss_period} iterations",running_loss)
+            loss_list.append(running_loss)
             running_loss = 0.0
 
             # Checkpoint
             ckp = define_checkpoint(net, optimizer, epoch)
             save_checkpoint(ckp, ckp_path)
 
+    log_loss(loss_list, config.loss_period)
     torch.save(net.state_dict(), save_path)
