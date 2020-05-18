@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/luczeng/MotionBlur/mlruns/0/e67b30fad56344c490c76a21cbc7bf92/artifacts
+end_time: 1589553416408
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+name: ''
+run_id: e67b30fad56344c490c76a21cbc7bf92
+run_uuid: e67b30fad56344c490c76a21cbc7bf92
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1589553378055
+status: 3
+tags: []
+user_id: luczeng
