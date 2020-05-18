@@ -2,10 +2,73 @@ from motion_blur.libs.forward_models.kernels.motion import line_integral, motion
 import unittest
 import pytest
 import math
+import numpy as np
 
 
 assertions = unittest.TestCase("__init__")
 
+class TestMotionKernel(unittest.TestCase):
+
+    def test_kernel_horizontal_10(test):
+
+        # Kernel parameters
+        L = 10
+        theta = 0
+
+        kernel =motion_kernel(theta,L)
+
+        # Gt
+        kernel_gt = np.zeros((L,L))
+        kernel_gt[4,:] = 0.5
+        kernel_gt[5,:] = 0.5
+        kernel_gt /= kernel_gt.sum()
+
+        np.testing.assert_array_equal(kernel_gt,kernel)
+
+    def test_kernel_horizontal_11(test): 
+        # Kernel parameters
+        L = 11
+        theta = 0
+
+        kernel =motion_kernel(theta,L)
+
+        # Gt
+        kernel_gt = np.zeros((L,L))
+        kernel_gt[5,:] = 1
+        kernel_gt /= kernel_gt.sum()
+
+        np.testing.assert_array_equal(kernel_gt,kernel)
+
+    def test_kernel_vertical_10(test):
+
+        # Kernel parameters
+        L = 10
+        theta = 90
+
+        kernel =motion_kernel(theta,L)
+
+        # Gt
+        kernel_gt = np.zeros((L,L))
+        kernel_gt[:,4] = 0.5
+        kernel_gt[:,5] = 0.5
+        kernel_gt /= kernel_gt.sum()
+
+        np.testing.assert_array_equal(kernel_gt,kernel)
+
+    def test_kernel_vertical_11(test): 
+        # Kernel parameters
+        L = 11
+        theta = 90
+
+        kernel =motion_kernel(theta,L)
+
+        # Gt
+        kernel_gt = np.zeros((L,L))
+        kernel_gt[:,5] = 1
+        print(kernel_gt)
+        kernel_gt /= kernel_gt.sum()
+
+        np.testing.assert_array_equal(kernel_gt,kernel)
 
 class TestLineIntegral(unittest.TestCase):
     """

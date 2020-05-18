@@ -13,7 +13,7 @@ def motion_kernel(theta: float, L: float) -> np.ndarray:
         :return kernel: motion kernel
     """
     kernel = np.zeros([int(L), int(L)])
-    x = np.arange(0, int(L), 1) - int(L / 2)
+    x = np.arange(0, int(L), 1) - (L-1) / 2
     X, Y = np.meshgrid(x, x)
 
     for i in range(x.shape[0]):
@@ -126,12 +126,17 @@ def line_integral(theta, x, y, pixel_half_width=0.5):
                     L = pythagorean_theorem(beta / TanTheta - b, TanTheta * b - beta)
 
     else:
-        if theta == 90 or theta == 270:  # vertical case
-            if a < 0 and b > 0:
-                L = (beta - alpha) * (b - a)
+        if theta == 90:  # vertical case
+            if (a == 0 and b >= 1) or (a == -1 and b == 0):  # horizontal case
+                L = 0.5
+            elif a == -0.5 and b >= 0.5:  # horizontal case
+                L = 1
         else:
-            if alpha < 0 and beta > 0:  # horizontal case
-                L = (beta - alpha) * (b - a)
+            if (alpha == 0 and beta >= 1) or (alpha == -1 and beta == 0):  # horizontal case
+                L = 0.5
+            elif alpha == -0.5 and beta >= 0.5:  # horizontal case
+                L = 1
+
 
     return L
 
@@ -142,14 +147,14 @@ if __name__ == "__main__":
     """
 
     # Parameters
-    theta = 40
-    L = 23
+    theta = 50
+    L = 11
 
     # Generate kernel
     kernel = motion_kernel(theta, L)
 
     # Visualize
-    x = np.arange(0, L, 1) - int(L / 2)
+    x = np.arange(0, L, 1) - (L - 1) / 2
 
     fig, ax = plt.subplots()
     im = ax.imshow(kernel, interpolation="none", extent=[x[0], x[-1], x[0], x[-1]])
