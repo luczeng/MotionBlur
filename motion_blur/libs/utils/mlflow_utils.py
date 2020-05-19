@@ -2,12 +2,13 @@ import mlflow
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def log_loss(loss, loss_period):
     """
     """
 
     # Loss vector
-    x = np.arange(loss_period,loss_period*len(loss),len(loss))
+    x = np.arange(loss_period, loss_period * len(loss), len(loss))
 
     # Plot loss
     fig = plt.figure(1)
@@ -18,4 +19,3 @@ def log_loss(loss, loss_period):
     plt.close(fig)
 
     mlflow.log_artifact("img/training_loss.png")
-    

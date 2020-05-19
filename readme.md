@@ -29,12 +29,13 @@ In your favorite conda environment, type:
 For development, install the test libraries as follow:
 
 ~~~
-    pip install -e .[TEST_SUITE]
+    pip install -e ".[TEST_SUITE,DEVELOP]"
 ~~~
 
 # Implementation
 - The linear kernel is obtained by integrating a line over one pixel so as to take into account discretization effects.
 - The deconvolution is a Wiener filter. We plan to add a TV deconvolution.
+- We use online gradient descent for training.
 - Data and training:  WIP
 
 # Usage

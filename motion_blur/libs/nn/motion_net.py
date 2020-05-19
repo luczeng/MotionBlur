@@ -9,6 +9,10 @@ from motion_blur.libs.forward_models.linops.convolution import Convolution
 
 class MotionNet(nn.Module):
     def __init__(self):
+        """
+            Network layer definition
+            TODO: evaluate which best init is best
+        """
 
         super(MotionNet, self).__init__()
         self.pool = nn.MaxPool2d(2, 2)
@@ -20,19 +24,33 @@ class MotionNet(nn.Module):
         # nn.init.xavier_uniform_(self.conv3.weight)
         self.conv4 = nn.Conv2d(32, 64, 3)
         # nn.init.xavier_uniform_(self.conv4.weight)
-        # self.adaptive_pool = nn.AdaptiveMaxPool2d((32, 32))
-        self.adaptive_pool = nn.MaxPool2d(2, 2)
-        self.fc1 = nn.Linear(30 * 30 * 64, 256)
+        self.adaptive_pool = nn.AdaptiveMaxPool2d((28, 28))
+        # self.adaptive_pool = nn.MaxPool2d(2, 2)
+        self.fc1 = nn.Linear(28 * 28 * 64, 256)
         self.fc2 = nn.Linear(256, 2)
 
-    def forward(self, x: torch.tensor):
-
+    def one_pass(self, x):
+        """
+            Pass of the net on one image
+        """
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
         x = self.pool(F.relu(self.conv3(x)))
         x = self.adaptive_pool(F.relu(self.conv4(x)))
-        x = x.view(-1, 30 * 30 * 64)
+        x = x.view(-1, 28 * 28 * 64)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
 
         return x
+
+    def forward(self, input):
+        """
+            Pass of the net over a batch
+        """
+
+        scores = []
+        for i, x in enumerate(input):
+            score = self.one_pass(x)
+            scores.append(score)
+
+        return scores
