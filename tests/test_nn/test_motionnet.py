@@ -4,9 +4,9 @@ from motion_blur.libs.nn.motion_net import MotionNet
 
 def test_forwardpass():
 
-    img = torch.rand((3, 1, 512, 512))
+    img = torch.rand((1, 1, 512, 512))
 
     mnet = MotionNet()
-    x = mnet.forward(img)
+    x = mnet.forward([img])
 
-    assert x.shape == (3, 2)
+    assert x[0].shape == (1, 2)

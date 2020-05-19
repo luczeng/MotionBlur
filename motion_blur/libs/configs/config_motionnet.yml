@@ -1,12 +1,16 @@
 TRAIN:
-    TRAIN_DATASET_PATH: 'imgs/lena.tiff'
+    TRAIN_DATASET_PATH: 'datasets/train2014'
     SAVE_PATH: 'training_results/3'
-    N_EPOCH: 50
-    LR: 0.0001
-    L_max : 20
-    L_min : 3
-    LOSS_PERIOD: 10
+    N_EPOCH: 10000
+    LR: 0.001
+    L_max : 10
+    L_min : 2
+    LOSS_PERIOD: 100
     MINI_BATCH_SIZE: 1
+VALIDATION:
+    VALIDATION_PERIOD: 500
+    SHARP_VAL_DATASET_PATH: 'datasets/val2014'
+    BLURRED_VAL_DATASET_PATH: 'datasets/coco_val'
 TEST:
     TEST_DATASET_PATH: 'imgs/lena.tiff'
     WEIGHT_PATH: 'models'

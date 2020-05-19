@@ -42,7 +42,7 @@ if __name__ == "__main__":
         net.to(device=torch.device("cuda"))
         net_type = torch.cuda.FloatTensor
     else:
-        net.load_state_dict(torch.load(path_to_model,map_location = torch.device("cpu")))
+        net.load_state_dict(torch.load(path_to_model, map_location=torch.device("cpu")))
         net_type = torch.FloatTensor
 
     # Randomly sample kernel

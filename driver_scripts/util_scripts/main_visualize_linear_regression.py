@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import torch
 import matplotlib.pyplot as plt
 import cv2
@@ -29,7 +30,7 @@ def parse_args():
 
 if __name__ == "__main__":
 
-    #
+    # Change those if you want to visualize different effects
     L_user = 10
     Theta_user = 45
 
@@ -92,17 +93,17 @@ if __name__ == "__main__":
     plt.tick_params(axis="x", bottom=False)
     plt.legend()
     plt.title("Angle inference for fixed motion blur length (L = {})".format(L_user))
-    plt.savefig("imgs/linear_motion_blur_perfomance.png")
+    plt.savefig("imgs/linear_motion_blur_perfomance_theta.png")
     plt.show()
     plt.clf()
 
-    plt.plot(L_infered, "xr", label="Infered angle")
-    plt.plot(L_true, "xb", label="True angle")
+    plt.plot(L_infered, "xr", label="Infered length")
+    plt.plot(L_true, "xb", label="True length")
     plt.xlabel("draw number")
     plt.ylabel("Blur length (pixel)")
     plt.tick_params(axis="x", bottom=False)
     plt.legend()
     plt.title("Blur length inference for fixed angle (theta = {})".format(Theta_user))
-    plt.savefig("imgs/linear_motion_blur_perfomance.png")
+    plt.savefig("imgs/linear_motion_blur_perfomance_length.png")
     plt.show()
     plt.clf()

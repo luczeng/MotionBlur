@@ -30,7 +30,3 @@ def define_checkpoint(model, optimizer, epoch):
 
 def load_model(model_path: str, model):
     model.load_state_dict(checkpoint["state_dict"])
-
-
-def weighted_mse_loss(inference, ground_truth, weights):
-    return torch.sum(weights * (inference - ground_truth) ** 2)
