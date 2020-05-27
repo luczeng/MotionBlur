@@ -2,6 +2,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from motion_blur.libs.utils.display_utils import Formatter
+import torch
 
 
 def motion_kernel(theta: float, L: float) -> np.ndarray:
@@ -11,9 +12,14 @@ def motion_kernel(theta: float, L: float) -> np.ndarray:
         :param theta angle in degrees of the kernel
         :param length of the kernel
         :return kernel: motion kernel
+        TODO: add check if input not torch
     """
+
+    if torch.is_tensor(L):
+        L = L.numpy()
+
     kernel = np.zeros([int(L), int(L)])
-    x = np.arange(0, int(L), 1) - (L-1) / 2
+    x = np.arange(0, int(L), 1) - (L - 1) / 2
     X, Y = np.meshgrid(x, x)
 
     for i in range(x.shape[0]):
@@ -136,7 +142,6 @@ def line_integral(theta, x, y, pixel_half_width=0.5):
                 L = 0.5
             elif alpha == -0.5 and beta >= 0.5:  # horizontal case
                 L = 1
-
 
     return L
 

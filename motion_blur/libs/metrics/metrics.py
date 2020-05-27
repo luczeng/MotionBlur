@@ -5,9 +5,13 @@ from motion_blur.libs.forward_models.linops.convolution import Convolution
 import torch
 
 
-def weighted_mse_loss(inferences, ground_truth, weights):
+def weighted_mse_loss(inferences, ground_truth, weights) -> float:
     """
         Calculates MSE loss with weights for unbalanced class
+        :param inferences
+        :param ground_truth:
+        :param weights
+        :return loss
     """
     loss = 0
     for inference, gt in zip(inferences, ground_truth):
@@ -17,7 +21,8 @@ def weighted_mse_loss(inferences, ground_truth, weights):
 
 def create_validation_dataset(config):
     """
-        Blurs and saves images for the validation dataset
+        Blurs and saves images for the validation dataset. Fill in parameters in your config file
+
         :parameter config
     """
 
@@ -26,8 +31,10 @@ def create_validation_dataset(config):
     torch.manual_seed(0)  # nota bene: the seed does not guarantee same numbers on all machines
 
     for img_path in Path(config.sharp_val_dataset_path).iterdir():
+
         # Blur image
         L = config.L_min + torch.rand(1) * (config.L_max - config.L_min)
+        L = L.round()
         theta = torch.rand(1) * 180
 
         img = io.imread(img_path, as_gray=True)
@@ -37,7 +44,7 @@ def create_validation_dataset(config):
         kernel = motion_kernel(theta, L)
         H = Convolution(kernel)
         img = torch.tensor((H * img)[None, None, :, :])
-        img = (img * 255 / img.max()).type(torch.uint8)
+        img = (img * 255 / img.max()).type(torch.uint8)  # to have an image between 0 - 255
 
         # Save
         outpath = Path(config.blurred_val_dataset_path) / (img_path.stem + ".png")
@@ -50,6 +57,11 @@ def create_validation_dataset(config):
 def run_validation(config, net, net_type):
     """
         Calculates the average error on the validation set
+        :param config
+        :param net
+        :param net_type cuda or cpu type
+        :return angle_loss, length_loss
+
         TODO: switch to dataloader to benefit from better accelerations?
     """
 
@@ -72,11 +84,45 @@ def run_validation(config, net, net_type):
         # Infer
         x = net.forward(img)
 
-        angle_loss += torch.abs(x[0] - gt[0]).detach()
-        length_loss += torch.abs(x[1] - gt[1]).detach()
+        # angle_loss += torch.abs(x[0][0][0] - gt[0]).detach()
+        # length_loss += torch.abs(x[0][0][1] - gt[1]).detach()
+        angle_loss += torch.abs(x[:, 0] - gt[0]).detach()
+        length_loss += torch.abs(x[:, 1] - gt[1]).detach()
         n_samples += 1
 
     angle_loss /= n_samples
     length_loss /= n_samples
+
+    return angle_loss, length_loss
+
+
+def evaluate_one_image(net, img_path, net_type, n_angles=60, n_length=20):
+    """
+        Evaluate the linear model on one image using several
+        Returns the average loss
+    """
+
+    img = io.imread(img_path, as_gray=True)
+
+    angles = torch.linspace(0, 180, n_angles)
+    lengths = torch.linspace(2, 10, n_length)
+
+    angle_loss = 0
+    length_loss = 0
+
+    for angle in angles:
+        for L in lengths:
+            kernel = motion_kernel(angle, L)
+            H = Convolution(kernel)
+            blurred_img = torch.tensor((H * img)[None, None, :, :])
+            blurred_img = blurred_img.type(net_type)  # to have an image between 0 - 255
+
+            x = net.forward(blurred_img)
+
+            angle_loss += torch.abs(x[:, 0] - angle).detach()
+            length_loss += torch.abs(x[:, 1] - L).detach()
+
+    angle_loss /= n_angles * n_length
+    length_loss /= n_angles * n_length
 
     return angle_loss, length_loss

@@ -1,0 +1,16 @@
+TRAIN:
+    TRAIN_DATASET_PATH: 'datasets/reds/train_reds'
+    SAVE_PATH: 'training_results/reds/run1'
+    N_EPOCH: 100
+    LR: 0.01
+    L_max : 10
+    L_min : 2
+    LOSS_PERIOD: 10
+    MINI_BATCH_SIZE: 16
+VALIDATION:
+    VALIDATION_PERIOD: 100
+    SHARP_VAL_DATASET_PATH:   'datasets/reds/val_reds'
+    BLURRED_VAL_DATASET_PATH: 'datasets/reds/val_blurred'
+TEST:
+    TEST_DATASET_PATH: 'datasets/reds/val_blurred'
+    WEIGHT_PATH: 'models'

@@ -10,3 +10,12 @@ motion_blur.egg-info
 
 # Vim stuff
 *.swp
+
+# Datasets stuff
+datasets
+
+# Mlflow
+mlruns
+
+# Training
+training_results
