@@ -7,7 +7,12 @@ import numpy as np
 
 assertions = unittest.TestCase("__init__")
 
+
 class TestMotionKernel(unittest.TestCase):
+    """
+        Test the motion kernel generation in the horizontal and vertical directions
+        For both the odd and even cases
+    """
 
     def test_kernel_horizontal_10(test):
 
@@ -15,29 +20,27 @@ class TestMotionKernel(unittest.TestCase):
         L = 10
         theta = 0
 
-        kernel =motion_kernel(theta,L)
+        kernel = motion_kernel(theta, L)
 
         # Gt
-        kernel_gt = np.zeros((L,L))
-        kernel_gt[4,:] = 0.5
-        kernel_gt[5,:] = 0.5
-        kernel_gt /= kernel_gt.sum()
+        kernel_gt = np.zeros((L, L))
+        kernel_gt[4, :] = 0.5
+        kernel_gt[5, :] = 0.5
 
-        np.testing.assert_array_equal(kernel_gt,kernel)
+        np.testing.assert_array_equal(kernel_gt, kernel)
 
-    def test_kernel_horizontal_11(test): 
+    def test_kernel_horizontal_11(test):
         # Kernel parameters
         L = 11
         theta = 0
 
-        kernel =motion_kernel(theta,L)
+        kernel = motion_kernel(theta, L)
 
         # Gt
-        kernel_gt = np.zeros((L,L))
-        kernel_gt[5,:] = 1
-        kernel_gt /= kernel_gt.sum()
+        kernel_gt = np.zeros((L, L))
+        kernel_gt[5, :] = 1
 
-        np.testing.assert_array_equal(kernel_gt,kernel)
+        np.testing.assert_array_equal(kernel_gt, kernel)
 
     def test_kernel_vertical_10(test):
 
@@ -45,33 +48,32 @@ class TestMotionKernel(unittest.TestCase):
         L = 10
         theta = 90
 
-        kernel =motion_kernel(theta,L)
+        kernel = motion_kernel(theta, L)
 
         # Gt
-        kernel_gt = np.zeros((L,L))
-        kernel_gt[:,4] = 0.5
-        kernel_gt[:,5] = 0.5
-        kernel_gt /= kernel_gt.sum()
+        kernel_gt = np.zeros((L, L))
+        kernel_gt[:, 4] = 0.5
+        kernel_gt[:, 5] = 0.5
 
-        np.testing.assert_array_equal(kernel_gt,kernel)
+        np.testing.assert_array_equal(kernel_gt, kernel)
 
-    def test_kernel_vertical_11(test): 
+    def test_kernel_vertical_11(test):
         # Kernel parameters
         L = 11
         theta = 90
 
-        kernel =motion_kernel(theta,L)
+        kernel = motion_kernel(theta, L)
 
         # Gt
-        kernel_gt = np.zeros((L,L))
-        kernel_gt[:,5] = 1
-        print(kernel_gt)
-        kernel_gt /= kernel_gt.sum()
+        kernel_gt = np.zeros((L, L))
+        kernel_gt[:, 5] = 1
 
-        np.testing.assert_array_equal(kernel_gt,kernel)
+        np.testing.assert_array_equal(kernel_gt, kernel)
+
 
 class TestLineIntegral(unittest.TestCase):
     """
+        Tests the integration of a line over one pixel
         x,y are coordinates of the center of the considered pixel
     """
 

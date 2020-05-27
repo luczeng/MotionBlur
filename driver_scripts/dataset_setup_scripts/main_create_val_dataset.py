@@ -1,5 +1,6 @@
-from motion_blur.libs.metrics.metrics import create_validation_dataset, run_validation
+from motion_blur.libs.metrics.metrics import create_validation_dataset
 from motion_blur.libs.configs.read_config import parse_config
+import argparse
 
 
 if __name__ == "__main__":
@@ -11,9 +12,12 @@ if __name__ == "__main__":
         TODO: parralelize process
     """
 
+    parser = argparse.ArgumentParser(description="Prepare validation dataset by blurring it")
+    parser.add_argument("-c", "--config", required=True)
+    args = parser.parse_args()
+
     # config
-    path_to_config = "motion_blur/libs/configs/config_motionnet.yml"
-    config = parse_config(path_to_config)
+    config = parse_config(args.config)
 
     # Create val dataset and saves it to disk
     create_validation_dataset(config)
