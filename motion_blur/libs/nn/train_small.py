@@ -82,6 +82,9 @@ def run_train_small(config, ckp_path, save_path, net, net_type):
                 )
                 mlflow.log_metric("angle_error", angle_loss.item())
                 mlflow.log_metric("length_error", length_loss.item())
+                print(
+                    f"\t\t Validation set: Angle error: {angle_loss.item():.2f}, Length error: {length_loss.item():.2f}"
+                )
 
             if epoch % config.saving_epoch == config.saving_epoch - 1:
                 # Checkpoint, save checkpoint to disck

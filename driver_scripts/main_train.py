@@ -22,7 +22,8 @@ if __name__ == "__main__":
     save_path = Path(config.save_path) / "final_model.pth"
 
     # Net
-    net = MotionNet()
+    # TODO: move this to train
+    net = MotionNet(config.n_layers, config.n_sublayers, config.n_features_first_layer, [1280, 720])
 
     # GPU
     if torch.cuda.is_available():
