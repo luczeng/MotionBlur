@@ -65,7 +65,8 @@ We currently use the REDS (or GOPRO) dataset for training. If you know any datas
 me know!
 
 # Contributing
-I use Black with line length 120. Please write unit tests (pytest) for your code. Please use the git-flow development
+I use Black with line length 120. Please write unit tests (pytest) for your code. Please use the
+[git-flow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) development
 process.
 
 # Performance

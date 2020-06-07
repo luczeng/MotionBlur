@@ -8,26 +8,32 @@ import torch
 def motion_kernel(theta: float, L: float) -> np.ndarray:
     """
         Generates a linear motion blur kernel.
+        Only accepts integer length (converts input to integer)
 
         :param theta angle in degrees of the kernel
         :param length of the kernel
         :return kernel: motion kernel
+
         TODO: add check if input not torch
+        TODO: change function for integer inputs
+        TODO: find a way to add the case of non integer lengths
     """
 
     if torch.is_tensor(L):
         L = L.numpy()
 
-    kernel = np.zeros([int(L), int(L)])
-    x = np.arange(0, int(L), 1) - (L - 1) / 2
-    X, Y = np.meshgrid(x, x)
+    if L > 1:
+        kernel = np.zeros([int(L), int(L)])
+        x = np.arange(0, int(L), 1) - (L - 1) / 2
+        X, Y = np.meshgrid(x, x)
 
-    for i in range(x.shape[0]):
-        for j in range(x.shape[0]):
-            if pythagorean_theorem(X[i, j], Y[i, j]) < L / 2:
-                kernel[i, j] = line_integral(theta, X[i, j], -Y[i, j])
+        for i in range(x.shape[0]):
+            for j in range(x.shape[0]):
+                if pythagorean_theorem(X[i, j], Y[i, j]) < L / 2:
+                    kernel[i, j] = line_integral(theta, X[i, j], -Y[i, j])
 
-    # kernel = kernel / kernel.sum()
+    else:
+        kernel = np.ones(1)
 
     return kernel
 
@@ -152,11 +158,13 @@ if __name__ == "__main__":
     """
 
     # Parameters
-    theta = 50
-    L = 11
+    theta = 0
+    L = 2
 
     # Generate kernel
     kernel = motion_kernel(theta, L)
+    print(kernel.shape)
+    print(kernel)
 
     # Visualize
     x = np.arange(0, L, 1) - (L - 1) / 2
