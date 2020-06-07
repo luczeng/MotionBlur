@@ -13,6 +13,11 @@ class parse_config:
         # General
         self.config_path = config_path
 
+        # Network parameters
+        self.n_layers = config_dict["NET"]["N_LAYERS"]
+        self.n_sublayers = config_dict["NET"]["N_SUBLAYERS"]
+        self.n_features_first_layer = config_dict["NET"]["N_FEATURES_FIRST_LAYER"]
+
         # Train parameters
         self.train_dataset_path = config_dict["TRAIN"]["TRAIN_DATASET_PATH"]
         self.save_path = config_dict["TRAIN"]["SAVE_PATH"]

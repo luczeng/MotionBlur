@@ -24,6 +24,7 @@ class TestMotionKernel(unittest.TestCase):
 
         # Gt
         kernel_gt = np.array([1])
+        kernel_gt = kernel_gt.reshape(1, 1)
 
         np.testing.assert_array_equal(kernel_gt, kernel)
 

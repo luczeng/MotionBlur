@@ -33,7 +33,7 @@ def motion_kernel(theta: float, L: float) -> np.ndarray:
                     kernel[i, j] = line_integral(theta, X[i, j], -Y[i, j])
 
     else:
-        kernel = np.ones(1)
+        kernel = np.ones([1, 1])
 
     return kernel
 

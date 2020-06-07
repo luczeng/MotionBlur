@@ -1,64 +1,81 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import copy
 
 
 class MotionNet(nn.Module):
-    def __init__(self):
+    def __init__(self, n_layers: int, n_sublayers: int, n_features: int, img_shape: list):
         """
             Network layer definition
-            Note: architecture is currently evolving a lot
-            TODO: evaluate which best init is best
+
+            :param n_layers                 number of layers
+            :param n_sublayers              number of sublayers (within each layers)
+            :param n_features               number of features after the first layer
+            :param img_shape                [well you should be sleeping now thenny, nx]
+
+            TODO: evaluate which init is best
         """
 
         super(MotionNet, self).__init__()
+
+        # Store args
+        self.n_layers = n_layers
+        self.n_sublayers = n_sublayers
+        self.n_features = n_features
+        self.img_shape = img_shape
+        self.output_img_shape = self._compute_conv_size()
+        self.dense_layer_size = self.output_img_shape[0] * self.output_img_shape[1] * n_features * n_layers
+
+        # Activation and pool
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv1 = nn.Conv2d(1, 8, 3)
-        self.conv12 = nn.Conv2d(8, 8, 3)
+        self.act = nn.ReLU()
 
-        self.conv2 = nn.Conv2d(8, 16, 3)
-        self.conv22 = nn.Conv2d(16, 16, 3)
+        # Convolutional
+        self.convolutional = nn.ModuleList()
 
-        self.conv3 = nn.Conv2d(16, 32, 3)
-        self.conv32 = nn.Conv2d(32, 32, 3)
+        # First layer
+        layer = nn.ModuleList()
+        layer.append(nn.Conv2d(1, n_features, 3))
+        for sublayer in range(1, self.n_sublayers):
+            layer.append(nn.Conv2d(n_features, n_features, 3))
+        self.convolutional.append(layer)
 
-        self.conv4 = nn.Conv2d(32, 64, 3)
-        self.conv42 = nn.Conv2d(64, 64, 3)
+        # Other convolutional layers
+        for k in range(1, n_layers):
+            layer = nn.ModuleList()
+            layer.append(nn.Conv2d(n_features * k, n_features * (k + 1), 3))
+            for sublayer in range(1, self.n_sublayers):
+                layer.append(nn.Conv2d(n_features * (k + 1), n_features * (k + 1), 3))
+            self.convolutional.append(layer)
 
-        self.pool = nn.MaxPool2d(2)
-        self.fc1 = nn.Linear(199424, 256)
-        self.fc2 = nn.Linear(256, 2)
+        # Classifier
+        self.lin1 = nn.Linear(self.dense_layer_size, 256)
+        self.lin2 = nn.Linear(256, 2)
 
     def _one_pass(self, x):
         """
             Pass of the net on one image
+
             :param x input tensor
         """
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.conv12(x))
-        x = self.pool(x)
 
-        x = F.relu(self.conv2(x))
-        x = F.relu(self.conv22(x))
-        x = self.pool(x)
+        for layer in self.convolutional:
+            for sublayer in layer:
+                x = F.relu(sublayer(x))
+            x = self.pool(x)
 
-        x = F.relu(self.conv3(x))
-        x = F.relu(self.conv32(x))
-        x = self.pool(x)
+        x = x.view(-1, self.dense_layer_size)
 
-        x = F.relu(self.conv4(x))
-        x = F.relu(self.conv42(x))
-        x = self.pool(x)
-
-        x = x.view(-1, 199424)
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)
+        x = F.relu(self.lin1(x))
+        x = F.relu(self.lin2(x))
 
         return x
 
     def forward(self, input):
         """
             Pass of the net over a batch
-            :param input image tensor or list of tensors
+
+            :param input tensor or list of tensors
         """
 
         if type(input) == list:
@@ -70,3 +87,20 @@ class MotionNet(nn.Module):
             scores = self._one_pass(input)
 
         return scores
+
+    def _compute_conv_size(self) -> list:
+        """
+            Computes the img size of the tensor at the end of the convolutional layers
+        """
+
+        conv_shape = copy.deepcopy(self.img_shape)
+
+        for lay in range(self.n_layers):
+            for sublay in range(self.n_sublayers):
+                conv_shape[0] -= 2
+                conv_shape[1] -= 2
+
+            conv_shape[0] = conv_shape[0] // 2
+            conv_shape[1] = conv_shape[1] // 2
+
+        return conv_shape
