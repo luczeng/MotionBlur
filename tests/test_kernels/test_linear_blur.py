@@ -14,6 +14,19 @@ class TestMotionKernel(unittest.TestCase):
         For both the odd and even cases
     """
 
+    def test_kernel_1(test):
+
+        # Kernel parameters
+        L = 1
+        theta = 35
+
+        kernel = motion_kernel(theta, L)
+
+        # Gt
+        kernel_gt = np.array([1])
+
+        np.testing.assert_array_equal(kernel_gt, kernel)
+
     def test_kernel_horizontal_10(test):
 
         # Kernel parameters
