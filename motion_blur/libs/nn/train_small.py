@@ -20,9 +20,6 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
         :param net_type cpu or gpu
     """
 
-    # Metrics
-    log_mlflow_param(config)
-
     # Resume
     if ckp_path.exists():
         start = load_checkpoint(ckp_path, net, optimizer)
@@ -55,7 +52,7 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
             iterations += 1
 
             # Print info, logging
-            if (epoch % config.loss_period == (config.loss_period - 1)) & epoch != 0:
+            if (epoch % config.loss_period == (config.loss_period - 1)) & (epoch != 0):
 
                 # Mlflow loggin
                 mlflow.log_metric("train_loss", running_loss / iterations, step=epoch + idx)
