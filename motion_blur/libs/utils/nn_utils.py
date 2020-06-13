@@ -1,12 +1,28 @@
 import torch
+import mlflow
+from pathlib import Path
 
+
+def log_mlflow_param(config):
+    '''
+        Log mlflow metrics.
+        Logs the whole config file and some specific parameters that are to be seen at first by the user
+        :param config parse_config file
+    '''
+
+    mlflow.log_artifact(config.config_path)
+    mlflow.log_param("lr", config.lr)
+    mlflow.log_param("dataset_name", Path(config.train_dataset_path).name)
+    mlflow.log_param("n_layers", config.n_layers)
+    mlflow.log_param("n_sublayers", config.n_sublayers)
+    mlflow.log_param("n_features", config.n_features_first_layer)
 
 def save_checkpoint(state, ckp_path):
     torch.save(state, ckp_path)
 
 
 def load_checkpoint(ckp_path, model, optimizer):
-    """ 
+    """
         Updates the model and optimizers to the checkpoint's state
         :param ckp_path path to checkpoint (.pth file)
         :param model
