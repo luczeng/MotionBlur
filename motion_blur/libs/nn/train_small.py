@@ -5,11 +5,9 @@ from motion_blur.libs.utils.training_utils import print_info_small_dataset
 from motion_blur.libs.metrics.metrics import evaluate_one_image
 import mlflow
 import mlflow.pytorch
-import torch.optim as optim
-from torch.nn import MSELoss
 
 
-def run_train_small(config, ckp_path, save_path, net, net_type):
+def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, criterion):
     """
         Training loop for a small dataset (ie not many images)
         Loss is displayed at each epoch instead of at each iteration.
@@ -25,11 +23,6 @@ def run_train_small(config, ckp_path, save_path, net, net_type):
     # Metrics
     log_mlflow_param(config)
 
-    # Initlialization
-    optimizer = optim.Adam(net.parameters(), lr=config.lr)
-    running_loss = 0.0
-    criterion = MSELoss()
-
     # Resume
     if ckp_path.exists():
         start = load_checkpoint(ckp_path, net, optimizer)
@@ -42,6 +35,7 @@ def run_train_small(config, ckp_path, save_path, net, net_type):
 
     # Training loop
     iterations = 0
+    running_loss = 0.0
     for epoch in range(start, config.n_epoch):
         for idx, batch in enumerate(dataloader):
 
