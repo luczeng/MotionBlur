@@ -1,17 +1,17 @@
 NET:
     N_LAYERS: 4
     N_SUBLAYERS: 2
-    N_FEATURES_FIRST_LAYER: 16
+    N_FEATURES_FIRST_LAYER: 32
 TRAIN:
     TRAIN_DATASET_PATH: 'datasets/reds_small'
     SAVE_PATH: 'training_results/reds_small/run5'
     SMALL_DATASET: 1
-    N_EPOCH: 35000
-    LR: 0.00001
+    N_EPOCH: 5000
+    LR: 0.0001
     L_max : 10
     L_min : 0
     LOSS_PERIOD: 12
-    MINI_BATCH_SIZE: 8
+    MINI_BATCH_SIZE: 4
     SAVING_EPOCH: 2000
 VALIDATION:
     USE_VALIDATION: 1

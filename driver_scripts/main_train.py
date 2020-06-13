@@ -25,7 +25,7 @@ if __name__ == "__main__":
     save_path = Path(config.save_path) / "final_model.pth"
 
     # Net
-    reds_size = [1280, 720]
+    reds_size = [720, 1280]
     net = MotionNet(config.n_layers, config.n_sublayers, config.n_features_first_layer, reds_size)
 
     # Determine type (GPU or not)

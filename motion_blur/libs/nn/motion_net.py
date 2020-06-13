@@ -52,8 +52,7 @@ class MotionNet(nn.Module):
 
         # Classifier
         self.GlobalAvgPool = nn.AvgPool2d(self.output_img_shape)
-        self.lin1 = nn.Linear(n_features * 2 ** (k + 1), 256)
-        self.lin2 = nn.Linear(256, 2)
+        self.lin1 = nn.Linear(n_features * 2 ** (k + 1), 2)
 
     def _one_pass(self, x):
         """
@@ -71,8 +70,7 @@ class MotionNet(nn.Module):
         x = self.GlobalAvgPool(x)
         x = x.view(-1, x.shape[1])
 
-        x = F.relu(self.lin1(x))
-        x = F.relu(self.lin2(x))
+        x = self.lin1(x)
 
         return x
 
