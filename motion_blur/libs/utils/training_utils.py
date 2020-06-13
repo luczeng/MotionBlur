@@ -7,6 +7,7 @@ def print_info(running_loss, epoch, idx, dataset_len, config):
         :param idx iteration index (for one epoch)
         :param dataset_len number of points in the dataset
         :param config
+        :return running_loss, iterations resetted to 0
         TODO: Move to other file (training_utils.py?)
     """
 
@@ -30,6 +31,7 @@ def print_info_small_dataset(running_loss, iterations, epoch, idx, dataset_len, 
         :param idx iteration index (for one epoch)
         :param dataset_len number of points in the dataset
         :param config
+        :return running_loss, iterations resetted to 0
         TODO: Move to other file (training_utils.py?)
     """
 
