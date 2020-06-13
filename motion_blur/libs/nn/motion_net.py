@@ -24,7 +24,9 @@ class MotionNet(nn.Module):
         self.n_features = n_features
         self.img_shape = img_shape
         self.output_img_shape = self._compute_conv_size()
-        self.dense_layer_size = self.output_img_shape[0] * self.output_img_shape[1] * n_features * n_layers
+        self.dense_layer_size = (
+            self.output_img_shape[0] * self.output_img_shape[1] * n_features * n_layers
+        )  # TODO: remove
 
         # Activation and pool
         self.pool = nn.MaxPool2d(2, 2)
@@ -41,15 +43,16 @@ class MotionNet(nn.Module):
         self.convolutional.append(layer)
 
         # Other convolutional layers
-        for k in range(1, n_layers):
+        for k in range(0, n_layers - 1):
             layer = nn.ModuleList()
-            layer.append(nn.Conv2d(n_features * k, n_features * (k + 1), 3))
+            layer.append(nn.Conv2d(n_features * 2 ** k, n_features * 2 ** (k + 1), 3))
             for sublayer in range(1, self.n_sublayers):
-                layer.append(nn.Conv2d(n_features * (k + 1), n_features * (k + 1), 3))
+                layer.append(nn.Conv2d(n_features * 2 ** (k + 1), n_features * 2 ** (k + 1), 3))
             self.convolutional.append(layer)
 
         # Classifier
-        self.lin1 = nn.Linear(self.dense_layer_size, 256)
+        self.GlobalAvgPool = nn.AvgPool2d(self.output_img_shape)
+        self.lin1 = nn.Linear(n_features * 2 ** (k + 1), 256)
         self.lin2 = nn.Linear(256, 2)
 
     def _one_pass(self, x):
@@ -64,7 +67,9 @@ class MotionNet(nn.Module):
                 x = F.relu(sublayer(x))
             x = self.pool(x)
 
-        x = x.view(-1, self.dense_layer_size)
+        # Global average pooling
+        x = self.GlobalAvgPool(x)
+        x = x.view(-1, x.shape[1])
 
         x = F.relu(self.lin1(x))
         x = F.relu(self.lin2(x))
