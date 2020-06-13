@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader
-from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint
+from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint, log_mlflow_param
 from motion_blur.libs.data.dataset import Dataset_OneImage
 from motion_blur.libs.utils.training_utils import print_info_small_dataset
 from motion_blur.libs.metrics.metrics import evaluate_one_image
@@ -7,7 +7,6 @@ import mlflow
 import mlflow.pytorch
 import torch.optim as optim
 from torch.nn import MSELoss
-from pathlib import Path
 
 
 def run_train_small(config, ckp_path, save_path, net, net_type):
@@ -23,10 +22,8 @@ def run_train_small(config, ckp_path, save_path, net, net_type):
         :param net_type cpu or gpu
     """
 
-    # Logging
-    mlflow.log_artifact(config.config_path)
-    mlflow.log_param("lr", config.lr)
-    mlflow.log_param("dataset_name", Path(config.train_dataset_path).name)
+    # Metrics
+    log_mlflow_param(config)
 
     # Initlialization
     optimizer = optim.Adam(net.parameters(), lr=config.lr)
