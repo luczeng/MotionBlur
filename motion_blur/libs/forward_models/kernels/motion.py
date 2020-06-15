@@ -35,7 +35,6 @@ def motion_kernel(theta: float, L: int) -> np.ndarray:
         theta = theta.numpy()
 
     # Kernel computation
-    print(theta)
     if L >= 2:
         kernel = np.zeros([L, L])
         x = np.arange(0, L, 1) - (L - 1) / 2

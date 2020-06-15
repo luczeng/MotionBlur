@@ -84,8 +84,6 @@ def run_validation(config, net, net_type):
         # Infer
         x = net.forward(img)
 
-        # angle_loss += torch.abs(x[0][0][0] - gt[0]).detach()
-        # length_loss += torch.abs(x[0][0][1] - gt[1]).detach()
         angle_loss += torch.abs(x[:, 0] - gt[0]).detach()
         length_loss += torch.abs(x[:, 1] - gt[1]).detach()
         n_samples += 1
@@ -96,33 +94,38 @@ def run_validation(config, net, net_type):
     return angle_loss, length_loss
 
 
-def evaluate_one_image(net, img_path, net_type, n_angles=60, n_length=20):
+def evaluate_one_image(net, img_path, net_type, n_angles=60, L_min=0, L_max=10):
     """
         Evaluate the linear model on one image using several
         Returns the average loss
+
+        TODO: this is not modular enough
     """
 
     img = io.imread(img_path, as_gray=True)
 
     angles = torch.linspace(0, 180, n_angles)
-    lengths = torch.linspace(2, 10, n_length)
+    if L_min != L_max:
+        lengths = torch.arange(L_min, L_max, 2)  # odd values
+    else:
+        lengths = [torch.tensor([L_min]).float()]
 
     angle_loss = 0
     length_loss = 0
 
     for angle in angles:
         for L in lengths:
-            kernel = motion_kernel(angle, L)
+            kernel = motion_kernel(angle, int(L))
             H = Convolution(kernel)
             blurred_img = torch.tensor((H * img)[None, None, :, :])
             blurred_img = blurred_img.type(net_type)  # to have an image between 0 - 255
 
             x = net.forward(blurred_img)
 
-            angle_loss += torch.abs(x[:, 0] - angle).detach()
-            length_loss += torch.abs(x[:, 1] - L).detach()
+            angle_loss += torch.abs(x[0, 0] - angle).detach()
+            length_loss += torch.abs(x[0, 1] - L).detach()
 
-    angle_loss /= n_angles * n_length
-    length_loss /= n_angles * n_length
+    angle_loss /= n_angles * len(lengths)
+    length_loss /= n_angles * len(lengths)
 
     return angle_loss, length_loss
