@@ -40,7 +40,7 @@ class Dataset(Dataset):
 class Dataset_OneImage(Dataset):
     def __init__(self, batch_size, root_dir, L_min, L_max, net_type):
         """
-            This dataset is being used for eveluating the capacity of the model on one image
+            This dataset is being used for evaluating the capacity of the model on one image
             It only uses one image
 
             TODO: remove list
@@ -48,22 +48,25 @@ class Dataset_OneImage(Dataset):
         self.root_dir = root_dir
         self.L_min = L_min
         self.L_max = L_max
-        self.length_list = list(range(L_min, L_max, 2))  # odd values
-        self.n_lengths = len(self.length_list)
+        if L_min != L_max:
+            self.length_list = torch.arange(L_min, L_max, 2)  # odd values
+        else:
+            self.length_list = [torch.tensor([L_min]).float()]
+            self.n_lengths = len(self.length_list)
         self.img_list = [img_path for img_path in Path(root_dir).iterdir() if img_path.is_file()]
         self.net_type = net_type
         self.batch_size = batch_size
 
     def __getitem__(self, idx):
 
-        L = self.length_list[random.randint(0, self.n_lengths)]
+        L = self.length_list[random.randint(0, self.n_lengths - 1)]
         theta = torch.rand(1) * 180
 
         img = io.imread(self.img_list[0], as_gray=True)
 
         gt = torch.cat((theta, L)).type(self.net_type)
 
-        kernel = motion_kernel(theta, L)
+        kernel = motion_kernel(theta, int(L))
         H = Convolution(kernel)
         img = torch.tensor((H * img)[None, :, :]).type(self.net_type)
 

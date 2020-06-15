@@ -37,7 +37,6 @@ class parse_config:
         self.validation_period = config_dict["VALIDATION"]["VALIDATION_PERIOD"]
         self.val_small_dataset_path = config_dict["VALIDATION"]["VAL_SMALL_DATASET_PATH"]
         self.val_n_angles = config_dict["VALIDATION"]["VAL_N_ANGLES"]
-        self.val_n_lengths = config_dict["VALIDATION"]["VAL_N_LENGTHS"]
 
         # Test parameters
         self.test_dataset_path = config_dict["TEST"]["TEST_DATASET_PATH"]

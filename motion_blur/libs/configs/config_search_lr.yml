@@ -1,5 +1,5 @@
 param: 'lr'
-min: -6
+min: -5
 max: -2
-n_bins : 8
+n_bins : 4
 

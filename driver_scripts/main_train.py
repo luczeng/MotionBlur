@@ -3,6 +3,7 @@ from motion_blur.libs.configs.read_config import parse_config
 from motion_blur.libs.nn.train import run_train
 from motion_blur.libs.nn.train_small import run_train_small
 from motion_blur.libs.utils.nn_utils import print_training_info
+from motion_blur.libs.utils.nn_utils import log_mlflow_param
 from pathlib import Path
 import argparse
 import torch
@@ -39,8 +40,11 @@ if __name__ == "__main__":
     optimizer = optim.Adam(net.parameters(), lr=config.lr)
     criterion = MSELoss()
 
-    # Training loop
+    # Print net info and log parameters
     print_training_info(net, reds_size)
+    log_mlflow_param(config)
+
+    # Training loop
     if config.small_dataset:
         run_train_small(config, ckp_path, save_path, net, net_type, optimizer, criterion)
     else:

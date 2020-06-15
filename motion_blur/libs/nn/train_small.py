@@ -21,10 +21,9 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
     """
 
     # Resume
-    if ckp_path.exists():
-        start = load_checkpoint(ckp_path, net, optimizer)
-    else:
-        start = 0
+    start = 0
+    # if ckp_path.exists():
+    # start = load_checkpoint(ckp_path, net, optimizer)
 
     # Data
     dataset = Dataset_OneImage(config.mini_batch_size, config.train_dataset_path, config.L_min, config.L_max, net_type)
@@ -66,7 +65,7 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
             # Run evaluation
             if (epoch % config.validation_period == config.validation_period - 1) & epoch != 0:
                 angle_loss, length_loss = evaluate_one_image(
-                    net, config.val_small_dataset_path, net_type, config.val_n_angles, config.val_n_lengths
+                    net, config.val_small_dataset_path, net_type, config.val_n_angles, config.L_min, config.L_max
                 )
                 mlflow.log_metric("angle_error", angle_loss.item())
                 mlflow.log_metric("length_error", length_loss.item())
