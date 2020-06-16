@@ -1,16 +1,16 @@
-import cv2, time
+import cv2
 import matplotlib.pyplot as plt
 from motion_blur.libs.utils.kernel_utils import Rotations
 from motion_blur.libs.utils.display_utils import PageSlider
 from matplotlib.gridspec import GridSpec
 
 
-""" 
-    Interactively displays the result of the convolution with several motion kernels 
+"""
+    Interactively displays the result of the convolution with several motion kernels
 """
 # Parameters
-NAngles = 20
-L = 5
+NAngles = 10
+L = 21
 
 # Generate blur
 img = cv2.imread("imgs/lena.tiff", 0)
