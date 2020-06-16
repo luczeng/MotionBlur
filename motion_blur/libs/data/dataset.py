@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 from motion_blur.libs.forward_models.kernels.motion import motion_kernel
 from motion_blur.libs.forward_models.linops.convolution import Convolution
 import torch
+import random
 from pathlib import Path
 
 
@@ -47,14 +48,15 @@ class Dataset_OneImage(Dataset):
         self.root_dir = root_dir
         self.L_min = L_min
         self.L_max = L_max
+        self.length_list = list(range(L_min, L_max, 2))  # odd values
+        self.n_lengths = len(self.length_list)
         self.img_list = [img_path for img_path in Path(root_dir).iterdir() if img_path.is_file()]
         self.net_type = net_type
         self.batch_size = batch_size
 
     def __getitem__(self, idx):
 
-        L = self.L_min + torch.rand(1) * (self.L_max - self.L_min)
-        L = L.round()
+        L = self.length_list[random.randint(0, self.n_lengths)]
         theta = torch.rand(1) * 180
 
         img = io.imread(self.img_list[0], as_gray=True)

@@ -15,7 +15,7 @@ class Rotations:
         self.image = image
         self.NAngles = NAngles
         self.L = L
-        self.Angles = sorted(np.random.uniform(0, 180, NAngles))
+        self.Angles = sorted(np.linspace(0, 180, NAngles))
 
     def Apply(self):
         self.Out = np.zeros((self.image.shape[0], self.image.shape[1], self.NAngles))

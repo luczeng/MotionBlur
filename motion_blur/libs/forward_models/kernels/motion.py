@@ -5,32 +5,48 @@ from motion_blur.libs.utils.display_utils import Formatter
 import torch
 
 
-def motion_kernel(theta: float, L: float) -> np.ndarray:
+def motion_kernel(theta: float, L: int) -> np.ndarray:
     """
         Generates a linear motion blur kernel.
-        Only accepts integer length (converts input to integer)
+        Only accepts ODD length. This is due to the fact that the even sized kernel brought a lot of issues. Eg,
+        how do you define the kernel at angle 0? It should be continuous for theta -> 0 otherwise it would bring issues
+        for the learning part. It is simpler to just discard that case. Any ideas regarding this is more than welcome.
+
+        The kernel is a 1x1 matrix of value 1 if the length is under 2.
 
         :param theta angle in degrees of the kernel
-        :param length of the kernel
+        :param length of the kernel. Odd size.
         :return kernel: motion kernel
 
-        TODO: add check if input not torch
-        TODO: change function for integer inputs
         TODO: find a way to add the case of non integer lengths
     """
 
+    # Checks
+
+    if L % 2 == 0:
+        raise ValueError("L should be odd")
+
+    if theta > 180 or theta < 0:
+        raise ValueError("theta should be between 0 and 180")
+
     if torch.is_tensor(L):
         L = L.numpy()
+    if torch.is_tensor(theta):
+        theta = theta.numpy()
 
-    if L > 1:
-        kernel = np.zeros([int(L), int(L)])
-        x = np.arange(0, int(L), 1) - (L - 1) / 2
+    # Kernel computation
+    print(theta)
+    if L >= 2:
+        kernel = np.zeros([L, L])
+        x = np.arange(0, L, 1) - (L - 1) / 2
         X, Y = np.meshgrid(x, x)
 
         for i in range(x.shape[0]):
             for j in range(x.shape[0]):
-                if pythagorean_theorem(X[i, j], Y[i, j]) < L / 2:
+                if pythagorean_theorem(X[i, j], Y[i, j]) < float(L) / 2:
                     kernel[i, j] = line_integral(theta, X[i, j], -Y[i, j])
+
+        kernel /= kernel.sum()
 
     else:
         kernel = np.ones([1, 1])
@@ -163,8 +179,6 @@ if __name__ == "__main__":
 
     # Generate kernel
     kernel = motion_kernel(theta, L)
-    print(kernel.shape)
-    print(kernel)
 
     # Visualize
     x = np.arange(0, L, 1) - (L - 1) / 2

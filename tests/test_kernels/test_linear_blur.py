@@ -28,21 +28,6 @@ class TestMotionKernel(unittest.TestCase):
 
         np.testing.assert_array_equal(kernel_gt, kernel)
 
-    def test_kernel_horizontal_10(test):
-
-        # Kernel parameters
-        L = 10
-        theta = 0
-
-        kernel = motion_kernel(theta, L)
-
-        # Gt
-        kernel_gt = np.zeros((L, L))
-        kernel_gt[4, :] = 0.5
-        kernel_gt[5, :] = 0.5
-
-        np.testing.assert_array_equal(kernel_gt, kernel)
-
     def test_kernel_horizontal_11(test):
         # Kernel parameters
         L = 11
@@ -51,23 +36,9 @@ class TestMotionKernel(unittest.TestCase):
         kernel = motion_kernel(theta, L)
 
         # Gt
-        kernel_gt = np.zeros((L, L))
+        kernel_gt = np.zeros((int(L), int(L)))
         kernel_gt[5, :] = 1
-
-        np.testing.assert_array_equal(kernel_gt, kernel)
-
-    def test_kernel_vertical_10(test):
-
-        # Kernel parameters
-        L = 10
-        theta = 90
-
-        kernel = motion_kernel(theta, L)
-
-        # Gt
-        kernel_gt = np.zeros((L, L))
-        kernel_gt[:, 4] = 0.5
-        kernel_gt[:, 5] = 0.5
+        kernel_gt /= 11
 
         np.testing.assert_array_equal(kernel_gt, kernel)
 
@@ -79,8 +50,9 @@ class TestMotionKernel(unittest.TestCase):
         kernel = motion_kernel(theta, L)
 
         # Gt
-        kernel_gt = np.zeros((L, L))
+        kernel_gt = np.zeros((int(L), int(L)))
         kernel_gt[:, 5] = 1
+        kernel_gt /= 11
 
         np.testing.assert_array_equal(kernel_gt, kernel)
 
