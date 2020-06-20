@@ -27,9 +27,10 @@ if __name__ == "__main__":
 
     # Net
     reds_size = [720, 1280]
-    net = MotionNet(config.n_layers, config.n_sublayers, config.n_features_first_layer, reds_size)
+    net = MotionNet(config.n_layers, config.n_sublayers, config.n_features_first_layer, reds_size, config.as_gray)
+    # reds_size = (720, 1280)
 
-    # Determine type (GPU or not)
+    # Determine type(GPU or not)
     if torch.cuda.is_available():
         net.to(device=torch.device("cuda"))
         net_type = torch.cuda.FloatTensor

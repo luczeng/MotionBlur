@@ -2,6 +2,7 @@ NET:
     N_LAYERS: 5
     N_SUBLAYERS: 2
     N_FEATURES_FIRST_LAYER: 32
+    AS_GRAY : 0
 TRAIN:
     TRAIN_DATASET_PATH: 'datasets/reds_small'
     SAVE_PATH: 'training_results/reds_small/run5'

@@ -38,7 +38,7 @@ class Dataset(Dataset):
 
 
 class Dataset_OneImage(Dataset):
-    def __init__(self, batch_size, root_dir, L_min, L_max, net_type):
+    def __init__(self, batch_size, root_dir, L_min, L_max, net_type, as_gray=True):
         """
             This dataset is being used for evaluating the capacity of the model on one image
             It only uses one image
@@ -56,19 +56,25 @@ class Dataset_OneImage(Dataset):
         self.img_list = [img_path for img_path in Path(root_dir).iterdir() if img_path.is_file()]
         self.net_type = net_type
         self.batch_size = batch_size
+        self.as_gray = as_gray
 
     def __getitem__(self, idx):
 
         L = self.length_list[random.randint(0, self.n_lengths - 1)]
         theta = torch.rand(1) * 180
 
-        img = io.imread(self.img_list[0], as_gray=True)
+        img = io.imread(self.img_list[0], as_gray=self.as_gray)
 
         gt = torch.cat((theta, L)).type(self.net_type)
 
         kernel = motion_kernel(theta, int(L))
         H = Convolution(kernel)
-        img = torch.tensor((H * img)[None, :, :]).type(self.net_type)
+
+        if self.as_gray:
+            img = torch.tensor((H * img)[None, :, :]).type(self.net_type)
+        else:
+            img = torch.tensor((H * img)[:, :]).type(self.net_type)
+        img = img.permute(2, 0, 1)
 
         sample = {"image": img, "gt": gt}
 

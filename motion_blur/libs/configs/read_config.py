@@ -17,6 +17,7 @@ class parse_config:
         self.n_layers = config_dict["NET"]["N_LAYERS"]
         self.n_sublayers = config_dict["NET"]["N_SUBLAYERS"]
         self.n_features_first_layer = config_dict["NET"]["N_FEATURES_FIRST_LAYER"]
+        self.as_gray = bool(config_dict["NET"]["AS_GRAY"])
 
         # Train parameters
         self.train_dataset_path = config_dict["TRAIN"]["TRAIN_DATASET_PATH"]

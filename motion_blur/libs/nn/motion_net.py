@@ -4,7 +4,7 @@ import copy
 
 
 class MotionNet(nn.Module):
-    def __init__(self, n_layers: int, n_sublayers: int, n_features: int, img_shape: list):
+    def __init__(self, n_layers: int, n_sublayers: int, n_features: int, img_shape: list, as_gray: bool):
         """
             Network layer definition
 
@@ -36,8 +36,12 @@ class MotionNet(nn.Module):
         self.convolutional = nn.ModuleList()
 
         # First layer
+        if as_gray:
+            self.feature_size_in = 1
+        else:
+            self.feature_size_in = 3
         layer = nn.ModuleList()
-        layer.append(nn.Conv2d(1, n_features, 3))
+        layer.append(nn.Conv2d(self.feature_size_in, n_features, 3))
         for sublayer in range(1, self.n_sublayers):
             layer.append(nn.Conv2d(n_features, n_features, 3))
         self.convolutional.append(layer)
