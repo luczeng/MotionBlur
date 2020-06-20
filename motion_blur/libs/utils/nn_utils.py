@@ -7,7 +7,7 @@ from torchsummary import summary
 def print_training_info(net, img_size):
     print("\nNetwork information: \n")
     print(net, "\n")
-    summary(net, (1, img_size[0], img_size[1]))
+    # summary(net, (3, img_size[0], img_size[1]))
     print("\n")
 
 
