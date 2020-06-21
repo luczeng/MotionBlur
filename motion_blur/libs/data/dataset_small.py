@@ -110,12 +110,15 @@ class DatasetOneImageClassification(Dataset):
 
     def __getitem__(self, idx):
 
-        L = self.length_list[random.randint(0, self.n_lengths - 1)]
-        theta = self.angle_list[random.randint(0, self.n_angles - 1)]
+        idx_L = random.randint(0, self.n_lengths - 1)
+        idx_theta = random.randint(0, self.n_angles - 1)
+        L = self.length_list[idx_L]
+        theta = self.angle_list[idx_theta]
 
         img = io.imread(self.img_list[0], as_gray=self.as_gray)
 
-        gt = torch.cat((theta.reshape(1), L.reshape(1))).type(self.net_type)
+        # gt = torch.cat((torch.tensor(idx_theta).reshape(1), torch.tensor(idx_L).reshape(1))).type(torch.cuda.LongTensor)
+        gt = torch.tensor(idx_theta).type(torch.cuda.LongTensor)
 
         kernel = motion_kernel(theta, int(L))
         H = Convolution(kernel)

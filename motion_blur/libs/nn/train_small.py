@@ -1,19 +1,19 @@
 from torch.utils.data import DataLoader
 from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint
-from motion_blur.libs.data.dataset import Dataset_OneImage
+from motion_blur.libs.data.dataset_small import DatasetOneImageRegression, DatasetOneImageClassification
 from motion_blur.libs.utils.training_utils import print_info_small_dataset
 from motion_blur.libs.metrics.metrics import evaluate_one_image
 import mlflow
 import mlflow.pytorch
 
 
-def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, criterion):
+def run_train_small(cfg, ckp_path, save_path, net, net_type, optimizer, criterion):
     """
         Training loop for a small dataset (ie not many images)
         Loss is displayed at each epoch instead of at each iteration.
         This script is useful eg to evaluate the capacity ot the network.
 
-        :param config
+        :param cfg
         :param ckp_path path to checkpoint
         :param save_path path to final model
         :param net
@@ -22,19 +22,24 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
 
     # Resume
     start = 0
-    if ckp_path.exists() and config.load_checkpoint:
+    if ckp_path.exists() and cfg.load_checkpoint:
         start = load_checkpoint(ckp_path, net, optimizer)
 
     # Data
-    dataset = Dataset_OneImage(
-        config.mini_batch_size, config.train_dataset_path, config.L_min, config.L_max, net_type, config.as_gray
-    )
-    dataloader = DataLoader(dataset, batch_size=config.mini_batch_size, shuffle=True)
+    if cfg.regression:
+        dataset = DatasetOneImageRegression(
+            cfg.mini_batch_size, cfg.train_dataset_path, cfg.L_min, cfg.L_max, net_type, cfg.as_gray
+        )
+    else:
+        dataset = DatasetOneImageClassification(
+            cfg.mini_batch_size, cfg.train_dataset_path, cfg.L_min, cfg.L_max, cfg.n_angles, net_type, cfg.as_gray
+        )
+    dataloader = DataLoader(dataset, batch_size=cfg.mini_batch_size, shuffle=True)
 
     # Training loop
     iterations = 0
     running_loss = 0.0
-    for epoch in range(start, config.n_epoch):
+    for epoch in range(start, cfg.n_epoch):
         for idx, batch in enumerate(dataloader):
 
             # GPU
@@ -53,27 +58,21 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
             iterations += 1
 
             # Print info, logging
-            if (epoch % config.loss_period == (config.loss_period - 1)) & (epoch != 0):
+            if (epoch % cfg.loss_period == (cfg.loss_period - 1)) & (epoch != 0):
 
                 # Mlflow loggin
                 mlflow.log_metric("train_loss", running_loss / iterations, step=epoch + idx)
 
                 # Print training info
                 running_loss, iterations = print_info_small_dataset(
-                    running_loss, iterations, epoch, idx, len(dataset), config
+                    running_loss, iterations, epoch, idx, len(dataset), cfg
                 )
-                print("\t\t", x[0, :].cpu().detach().numpy(), batch["gt"][0, :].cpu().numpy())
+                print("\t\t", x[0, :].cpu().detach().numpy(), batch["gt"][0].cpu().numpy())
 
             # Run evaluation
-            if (epoch % config.validation_period == config.validation_period - 1) & epoch != 0:
+            if (epoch % cfg.validation_period == cfg.validation_period - 1) & epoch != 0:
                 angle_loss, length_loss = evaluate_one_image(
-                    net,
-                    config.val_small_dataset_path,
-                    net_type,
-                    config.val_n_angles,
-                    config.L_min,
-                    config.L_max,
-                    config.as_gray,
+                    net, cfg.val_small_dataset_path, net_type, cfg.val_n_angles, cfg.L_min, cfg.L_max, cfg.as_gray,
                 )
                 mlflow.log_metric("angle_error", angle_loss.item())
                 mlflow.log_metric("length_error", length_loss.item())
@@ -81,18 +80,18 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
                     f"\t\t Validation set: Angle error: {angle_loss.item():.2f}, Length error: {length_loss.item():.2f}"
                 )
 
-            if epoch % config.saving_epoch == config.saving_epoch - 1:
+            if epoch % cfg.saving_epoch == cfg.saving_epoch - 1:
                 # Checkpoint, save checkpoint to disck
                 ckp = define_checkpoint(net, optimizer, epoch)
                 save_checkpoint(ckp, ckp_path)
 
     # Run evaluation
     angle_loss, length_loss = evaluate_one_image(
-        net, config.val_small_dataset_path, net_type, config.val_n_angles, config.L_min, config.L_max, config.as_gray
+        net, cfg.val_small_dataset_path, net_type, cfg.val_n_angles, cfg.L_min, cfg.L_max, cfg.as_gray
     )
     mlflow.log_metric("final_angle_error", angle_loss.item())
     mlflow.log_metric("final_length_error", length_loss.item())
 
     # Upload model in mlflow
-    if config.log_weights:
+    if cfg.log_weights:
         mlflow.pytorch.log_model(net, "models")

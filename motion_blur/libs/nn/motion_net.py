@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 import torch.nn.functional as F
 import copy
 
@@ -56,6 +57,7 @@ class MotionNet(nn.Module):
             self.feature_size_in = 1
         else:
             self.feature_size_in = 3
+
         layer = nn.ModuleList()
         layer.append(nn.Conv2d(self.feature_size_in, n_features, 3))
         for sublayer in range(1, self.n_sublayers):
@@ -71,12 +73,12 @@ class MotionNet(nn.Module):
             self.convolutional.append(layer)
 
         # Classifier (2 inputs for regression, n_angles + n_lengths for classification)
-        self.GlobalAvgPool = nn.AvgPool2d(self.output_img_shape)
         if regression:
             self.lin1 = nn.Linear(n_features * 2 ** (k + 1), 2)
         else:
             if n_angles and n_lengths:
-                self.lin1 = nn.Linear(n_features * 2 ** (k + 1), n_angles + n_lengths)
+                # self.lin1 = nn.Linear(n_features * 2 ** (k + 1), n_angles + n_lengths)
+                self.lin1 = nn.Linear(n_features * 2 ** (k + 1), n_angles)
             else:
                 raise ValueError("Speficy number of angles for classification net")
 
@@ -93,7 +95,8 @@ class MotionNet(nn.Module):
             x = self.pool(x)
 
         # Global average pooling
-        x = self.GlobalAvgPool(x)
+        GlobalAvgPool = nn.AvgPool2d((x.shape[2], x.shape[3])) # find an alternative to this mb?
+        x = GlobalAvgPool(x)
         x = x.view(-1, x.shape[1])
 
         x = self.lin1(x)
