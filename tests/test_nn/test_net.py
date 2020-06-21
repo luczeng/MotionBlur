@@ -16,7 +16,25 @@ def test_size_computation():
     assert [12, 12] == output_shape
 
 
-def test_one_pass():
+def test_one_pass_regression():
+    """
+        Test the forward pass with different sizes of the net
+    """
+
+    net = MotionNet(4, 2, 8, [256, 256], as_gray=True)
+    x = torch.rand(4, 1, 256, 256)
+    inference = net._one_pass(x)
+
+    assert inference.shape == torch.Size([4, 2])
+
+    net = MotionNet(5, 4, 16, [512, 512], as_gray=True)
+    x = torch.rand(4, 1, 512, 512)
+    inference = net._one_pass(x)
+
+    assert inference.shape == torch.Size([4, 2])
+
+
+def test_one_pass_classification():
     """
         Test the forward pass with different sizes of the net
     """
