@@ -18,6 +18,7 @@ class parse_config:
         self.n_sublayers = config_dict["NET"]["N_SUBLAYERS"]
         self.n_features_first_layer = config_dict["NET"]["N_FEATURES_FIRST_LAYER"]
         self.as_gray = bool(config_dict["NET"]["AS_GRAY"])
+        self.regression = bool(config_dict["NET"]["REGRESSION"])
 
         # Train parameters
         self.train_dataset_path = config_dict["TRAIN"]["TRAIN_DATASET_PATH"]
@@ -26,6 +27,8 @@ class parse_config:
         self.lr = config_dict["TRAIN"]["LR"]
         self.L_max = config_dict["TRAIN"]["L_max"]
         self.L_min = config_dict["TRAIN"]["L_min"]
+        self.n_angles = config_dict["TRAIN"]["n_angles"]
+        self.n_lengths = config_dict["TRAIN"]["n_lengths"]
         self.loss_period = config_dict["TRAIN"]["LOSS_PERIOD"]
         self.mini_batch_size = config_dict["TRAIN"]["MINI_BATCH_SIZE"]
         self.small_dataset = bool(config_dict["TRAIN"]["SMALL_DATASET"])

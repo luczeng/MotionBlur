@@ -13,7 +13,6 @@ TRAIN:
     L_max : 11
     L_min : 11
     n_angles: 180
-    n_lengths : 1
     LOSS_PERIOD: 10
     MINI_BATCH_SIZE: 4
     SAVING_EPOCH: 100000
@@ -21,7 +20,7 @@ TRAIN:
 VALIDATION:
     USE_VALIDATION: 1
     VALIDATION_PERIOD: 100
-    SHARP_VAL_DATASET_PATH: ~  
+    SHARP_VAL_DATASET_PATH: ~
     BLURRED_VAL_DATASET_PATH: ~
     VAL_SMALL_DATASET_PATH: "datasets/reds_small/000_00000000.png"
     VAL_N_ANGLES: 60

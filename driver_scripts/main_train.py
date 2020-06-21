@@ -8,26 +8,39 @@ from pathlib import Path
 import argparse
 import torch
 import torch.optim as optim
-from torch.nn import MSELoss
+from torch.nn import MSELoss, CrossEntropyLoss
 
 
-if __name__ == "__main__":
+def parse_args():
 
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("-c", "--config_path", type=str, required=True)
     args = parser.parse_args()
 
+    return args
+
+
+def run_train(args):
     # Configs
-    config = parse_config(args.config_path)
+    cfg = parse_config(args.config_path)
 
     # Path
-    Path(config.save_path).mkdir(parents=True, exist_ok=True)
-    ckp_path = Path(config.save_path) / "ckp.pth"
-    save_path = Path(config.save_path) / "final_model.pth"
+    Path(cfg.save_path).mkdir(parents=True, exist_ok=True)
+    ckp_path = Path(cfg.save_path) / "ckp.pth"
+    save_path = Path(cfg.save_path) / "final_model.pth"
 
     # Net
     reds_size = [720, 1280]
-    net = MotionNet(config.n_layers, config.n_sublayers, config.n_features_first_layer, reds_size, config.as_gray)
+    net = MotionNet(
+        cfg.n_layers,
+        cfg.n_sublayers,
+        cfg.n_features_first_layer,
+        reds_size,
+        cfg.as_gray,
+        cfg.regression,
+        cfg.n_angles,
+        cfg.n_lengths,
+    )
     # reds_size = (720, 1280)
 
     # Determine type(GPU or not)
@@ -38,15 +51,25 @@ if __name__ == "__main__":
         net_type = torch.FloatTensor
 
     # Initlialization
-    optimizer = optim.Adam(net.parameters(), lr=config.lr)
-    criterion = MSELoss()
+    optimizer = optim.Adam(net.parameters(), lr=cfg.lr)
+    if cfg.regression:
+        criterion = MSELoss()
+    else:
+        criterion = CrossEntropyLoss()
 
     # Print net info and log parameters
     print_training_info(net, reds_size)
-    log_mlflow_param(config)
+    log_mlflow_param(cfg)
 
     # Training loop
-    if config.small_dataset:
-        run_train_small(config, ckp_path, save_path, net, net_type, optimizer, criterion)
+    if cfg.small_dataset:
+        run_train_small(cfg, ckp_path, save_path, net, net_type, optimizer, criterion)
     else:
-        run_train(config, ckp_path, save_path, net, net_type, criterion)
+        run_train(cfg, ckp_path, save_path, net, net_type, criterion)
+
+
+if __name__ == "__main__":
+
+    args = parse_args()
+
+    run_train(args)
