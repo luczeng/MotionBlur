@@ -48,11 +48,14 @@ class Dataset_OneImage(Dataset):
         self.root_dir = root_dir
         self.L_min = L_min
         self.L_max = L_max
+
+        # List of lengths (discrete)
         if L_min != L_max:
-            self.length_list = torch.arange(L_min, L_max, 2)  # odd values
+            self.length_list = torch.arange(L_min, L_max, 2).float()  # odd values
         else:
-            self.length_list = [torch.tensor([L_min]).float()]
-            self.n_lengths = len(self.length_list)
+            self.length_list = [torch.tensor(L_min).float()]
+        self.n_lengths = len(self.length_list)
+
         self.img_list = [img_path for img_path in Path(root_dir).iterdir() if img_path.is_file()]
         self.net_type = net_type
         self.batch_size = batch_size
@@ -65,7 +68,7 @@ class Dataset_OneImage(Dataset):
 
         img = io.imread(self.img_list[0], as_gray=self.as_gray)
 
-        gt = torch.cat((theta, L)).type(self.net_type)
+        gt = torch.cat((theta, L.reshape(1))).type(self.net_type)
 
         kernel = motion_kernel(theta, int(L))
         H = Convolution(kernel)
@@ -74,7 +77,7 @@ class Dataset_OneImage(Dataset):
             img = torch.tensor((H * img)[None, :, :]).type(self.net_type)
         else:
             img = torch.tensor((H * img)[:, :]).type(self.net_type)
-        img = img.permute(2, 0, 1)
+            img = img.permute(2, 0, 1)
 
         sample = {"image": img, "gt": gt}
 

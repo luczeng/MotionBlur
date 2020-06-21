@@ -67,7 +67,13 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
             # Run evaluation
             if (epoch % config.validation_period == config.validation_period - 1) & epoch != 0:
                 angle_loss, length_loss = evaluate_one_image(
-                    net, config.val_small_dataset_path, net_type, config.val_n_angles, config.L_min, config.L_max, config.as_gray
+                    net,
+                    config.val_small_dataset_path,
+                    net_type,
+                    config.val_n_angles,
+                    config.L_min,
+                    config.L_max,
+                    config.as_gray,
                 )
                 mlflow.log_metric("angle_error", angle_loss.item())
                 mlflow.log_metric("length_error", length_loss.item())
