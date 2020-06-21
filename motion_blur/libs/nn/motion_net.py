@@ -4,16 +4,32 @@ import copy
 
 
 class MotionNet(nn.Module):
-    def __init__(self, n_layers: int, n_sublayers: int, n_features: int, img_shape: list, as_gray: bool):
+    def __init__(
+        self,
+        n_layers: int,
+        n_sublayers: int,
+        n_features: int,
+        img_shape: list,
+        as_gray: bool,
+        regression: bool = False,
+        n_angles: int = None,
+        n_lengths: int = None,
+    ):
         """
             Network layer definition
 
             :param n_layers                 number of layers
             :param n_sublayers              number of sublayers (within each layers)
             :param n_features               number of features after the first layer
-            :param img_shape                [well you should be sleeping now thenny, nx]
+            :param img_shape                [ny, nx]
+            :param as_gray                  True for grayscale images
+            :param regression               True for regression network (2 outputs)
+            :param n_angles                 number of angles
+            :param n_lengths                number of lengths
 
-            TODO: evaluate which init is best
+            TODO: refactor inputs with config file
+            TODO: set init
+            TODO: remove img shape as input? Or make it optional?
         """
 
         super(MotionNet, self).__init__()
@@ -54,9 +70,15 @@ class MotionNet(nn.Module):
                 layer.append(nn.Conv2d(n_features * 2 ** (k + 1), n_features * 2 ** (k + 1), 3))
             self.convolutional.append(layer)
 
-        # Classifier
+        # Classifier (2 inputs for regression, n_angles + n_lengths for classification)
         self.GlobalAvgPool = nn.AvgPool2d(self.output_img_shape)
-        self.lin1 = nn.Linear(n_features * 2 ** (k + 1), 2)
+        if regression:
+            self.lin1 = nn.Linear(n_features * 2 ** (k + 1), 2)
+        else:
+            if n_angles and n_lengths:
+                self.lin1 = nn.Linear(n_features * 2 ** (k + 1), n_angles + n_lengths)
+            else:
+                raise ValueError("Speficy number of angles for classification net")
 
     def _one_pass(self, x):
         """
