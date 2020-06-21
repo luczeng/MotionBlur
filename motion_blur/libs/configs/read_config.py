@@ -30,6 +30,7 @@ class parse_config:
         self.mini_batch_size = config_dict["TRAIN"]["MINI_BATCH_SIZE"]
         self.small_dataset = bool(config_dict["TRAIN"]["SMALL_DATASET"])
         self.saving_epoch = config_dict["TRAIN"]["SAVING_EPOCH"]
+        self.load_checkpoint = bool(config_dict["TRAIN"]["LOAD_CHECKPOINT"])
 
         # Validation parameters
         self.use_validation = bool(config_dict["VALIDATION"]["USE_VALIDATION"])

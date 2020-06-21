@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader
-from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint, log_mlflow_param
+from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint
 from motion_blur.libs.data.dataset import Dataset_OneImage
 from motion_blur.libs.utils.training_utils import print_info_small_dataset
 from motion_blur.libs.metrics.metrics import evaluate_one_image
@@ -22,8 +22,8 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
 
     # Resume
     start = 0
-    # if ckp_path.exists():
-    # start = load_checkpoint(ckp_path, net, optimizer)
+    if ckp_path.exists() and config.load_checkpoint:
+        start = load_checkpoint(ckp_path, net, optimizer)
 
     # Data
     dataset = Dataset_OneImage(
@@ -82,7 +82,7 @@ def run_train_small(config, ckp_path, save_path, net, net_type, optimizer, crite
 
     # Run evaluation
     angle_loss, length_loss = evaluate_one_image(
-        net, config.val_small_dataset_path, net_type, config.val_n_angles, config.val_n_lengths
+        net, config.val_small_dataset_path, net_type, config.val_n_angles, config.L_min, config.L_max, config.as_gray
     )
     mlflow.log_metric("final_angle_error", angle_loss.item())
     mlflow.log_metric("final_length_error", length_loss.item())
