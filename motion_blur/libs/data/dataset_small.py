@@ -73,7 +73,7 @@ class DatasetOneImageClassification(Dataset):
     def __init__(self, batch_size, root_dir, L_min, L_max, n_angles, net_type, as_gray=True):
         """
             This dataset is being used for evaluating the capacity of the model on one image
-            The generated angles are discrete
+            The generated angles are discrete.
             It only uses one image
 
             :param batch_size
@@ -114,8 +114,6 @@ class DatasetOneImageClassification(Dataset):
         idx_theta = random.randint(0, self.n_angles - 1)
         L = self.length_list[idx_L]
         theta = self.angle_list[idx_theta]
-
-        img = io.imread(self.img_list[0], as_gray=self.as_gray)
 
         # gt = torch.cat((torch.tensor(idx_theta).reshape(1), torch.tensor(idx_L).reshape(1))).type(torch.cuda.LongTensor)
         gt = torch.tensor(idx_theta).type(torch.cuda.LongTensor)

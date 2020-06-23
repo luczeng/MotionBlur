@@ -43,11 +43,11 @@ def test_one_pass_classification():
     x = torch.rand(4, 1, 256, 256)
     inference = net._one_pass(x)
 
-    assert inference.shape == torch.Size([4, 6])
+    assert inference.shape == torch.Size([4, 5])
 
     net = MotionNet(5, 4, 16, [512, 512], as_gray=True, n_angles=5, n_lengths=1)
 
     x = torch.rand(4, 1, 512, 512)
     inference = net._one_pass(x)
 
-    assert inference.shape == torch.Size([4, 6])
+    assert inference.shape == torch.Size([4, 5])

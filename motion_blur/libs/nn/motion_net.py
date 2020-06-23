@@ -95,7 +95,7 @@ class MotionNet(nn.Module):
             x = self.pool(x)
 
         # Global average pooling
-        GlobalAvgPool = nn.AvgPool2d((x.shape[2], x.shape[3])) # find an alternative to this mb?
+        GlobalAvgPool = nn.AvgPool2d((x.shape[2], x.shape[3]))  # find an alternative to this mb?
         x = GlobalAvgPool(x)
         x = x.view(-1, x.shape[1])
 

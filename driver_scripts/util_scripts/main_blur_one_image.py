@@ -9,12 +9,13 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Runs the motion blur estimation network on a blurred image with a randomly generated kernel"
     )
-    parser.add_argument('-i', '--input_path', type = str)
+    parser.add_argument("-i", "--input_path", type=str)
     args = parser.parse_args()
 
     return args
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     """
         Interactively displays the result of the convolution with several motion kernels
     """
@@ -26,16 +27,16 @@ if __name__ == '__main__':
 
     # Generate blur
     img = cv2.imread(args.input_path)
-    img = cv2.cvtColor( img, cv2.COLOR_BGR2RGB)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     kernel = motion_kernel(theta, L)
     H = Convolution(kernel)
     img_blur = H * img
     img_blur /= img.max()
 
-    f, (ax1, ax2) = plt.subplots(1,2)
+    f, (ax1, ax2) = plt.subplots(1, 2)
     ax1.imshow(img)
     ax2.imshow(img_blur)
-    ax1.axis('off')
-    ax2.axis('off')
+    ax1.axis("off")
+    ax2.axis("off")
     plt.show()
