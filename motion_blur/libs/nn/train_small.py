@@ -2,7 +2,10 @@ from torch.utils.data import DataLoader
 from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint
 from motion_blur.libs.data.dataset_small import DatasetOneImageRegression, DatasetOneImageClassification
 from motion_blur.libs.utils.training_utils import print_info_small_dataset
-from motion_blur.libs.metrics.metrics import evaluate_one_image, evaluate_one_image_classification
+from motion_blur.libs.metrics.metrics_small_dataset import (
+    evaluate_one_image_regression,
+    evaluate_one_image_classification,
+)
 import mlflow
 import mlflow.pytorch
 
@@ -72,17 +75,17 @@ def run_train_small(cfg, ckp_path, save_path, net, net_type, optimizer, criterio
             # Run evaluation
             if (epoch % cfg.validation_period == cfg.validation_period - 1) & epoch != 0:
                 # angle_loss, length_loss = evaluate_one_image(
-                    # net, cfg.val_small_dataset_path, net_type, cfg.val_n_angles, cfg.L_min, cfg.L_max, cfg.as_gray,
+                # net, cfg.val_small_dataset_path, net_type, cfg.val_n_angles, cfg.L_min, cfg.L_max, cfg.as_gray,
                 # )
-                angle_loss = evaluate_one_image_classification( net, cfg.val_small_dataset_path, net_type, cfg.n_angles, cfg.L_min, cfg.L_max, cfg.as_gray)
+                angle_loss = evaluate_one_image_classification(
+                    net, cfg.val_small_dataset_path, net_type, cfg.n_angles, cfg.L_min, cfg.L_max, cfg.as_gray
+                )
                 mlflow.log_metric("angle_error", angle_loss.item())
                 # mlflow.log_metric("length_error", length_loss.item())
                 # print(
-                    # f"\t\t Validation set: Angle error: {angle_loss.item():.2f}, Length error: {length_loss.item():.2f}"
+                # f"\t\t Validation set: Angle error: {angle_loss.item():.2f}, Length error: {length_loss.item():.2f}"
                 # )
-                print(
-                    f"\t\t Validation set: Angle error: {angle_loss.item():.2f}"
-                )
+                print(f"\t\t Validation set: Angle error: {angle_loss.item():.2f}")
 
             if epoch % cfg.saving_epoch == cfg.saving_epoch - 1:
                 # Checkpoint, save checkpoint to disck
@@ -91,9 +94,11 @@ def run_train_small(cfg, ckp_path, save_path, net, net_type, optimizer, criterio
 
     # Run evaluation
     # angle_loss, length_loss = evaluate_one_image(
-        # net, cfg.val_small_dataset_path, net_type, cfg.val_n_angles, cfg.L_min, cfg.L_max, cfg.as_gray
+    # net, cfg.val_small_dataset_path, net_type, cfg.val_n_angles, cfg.L_min, cfg.L_max, cfg.as_gray
     # )
-    angle_loss = evaluate_one_image_classification(net, cfg.val_small_dataset_path, net_type, cfg.n_angles, cfg.L_min, cfg.L_max, cfg.as_gray)
+    angle_loss = evaluate_one_image_classification(
+        net, cfg.val_small_dataset_path, net_type, cfg.n_angles, cfg.L_min, cfg.L_max, cfg.as_gray
+    )
     mlflow.log_metric("final_angle_error", angle_loss.item())
     # mlflow.log_metric("final_length_error", length_loss.item())
 

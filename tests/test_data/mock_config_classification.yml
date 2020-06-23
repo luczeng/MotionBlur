@@ -10,8 +10,8 @@ TRAIN:
     SMALL_DATASET: 1
     N_EPOCH: 2
     LR: 0.001
-    L_max : 11
-    L_min : 11
+    L_max : 5
+    L_min : 5
     n_angles: 2
     n_lengths : 1
     LOSS_PERIOD: 1
