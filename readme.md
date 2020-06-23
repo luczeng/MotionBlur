@@ -46,7 +46,7 @@ For development, install the test libraries as follow:
 - We use Torch and python3. For managing learning runs, we use mlflow with Neptune.
 
 # Usage
-- For inference, edit or copy the configuration file in libs/configs run:  
+- For inference, edit or copy the configuration file in libs/configs and run:  
 
  
 ```

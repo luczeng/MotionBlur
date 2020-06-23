@@ -41,7 +41,6 @@ def run_train(args):
         cfg.n_angles,
         cfg.n_lengths,
     )
-    # reds_size = (720, 1280)
 
     # Determine type(GPU or not)
     if torch.cuda.is_available():
