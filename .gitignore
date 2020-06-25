@@ -19,3 +19,6 @@ mlruns
 
 # Training
 training_results
+
+# Tests output
+tests/test_data/tmp/
