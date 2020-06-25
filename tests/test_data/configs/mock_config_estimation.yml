@@ -3,7 +3,7 @@ NET:
     N_SUBLAYERS: 1
     N_FEATURES_FIRST_LAYER: 1
     AS_GRAY : 0
-    REGRESSION: 0
+    REGRESSION: 1
 TRAIN:
     TRAIN_DATASET_PATH: 'tests/test_data/test_img/'
     SAVE_PATH: 'tests/test_data/tmp'
