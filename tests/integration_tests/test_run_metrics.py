@@ -7,7 +7,7 @@ import torch
 def test_small_dataset_classification_metrics_gray():
 
     # Parameters:
-    config_path = "tests/test_data/mock_config_classification.yml"
+    config_path = "tests/test_data/configs/mock_config_classification.yml"
     img_path = "tests/test_data/test_img/lena.jpeg"
     net_type = torch.FloatTensor
     n_angles = 2
@@ -30,7 +30,7 @@ def test_small_dataset_classification_metrics_gray():
 def test_small_dataset_classification_metrics_rgb():
 
     # Parameters:
-    config_path = "tests/test_data/mock_config_classification.yml"
+    config_path = "tests/test_data/configs/mock_config_classification.yml"
     img_path = "tests/test_data/test_img/lena.jpeg"
     net_type = torch.FloatTensor
     n_angles = 2

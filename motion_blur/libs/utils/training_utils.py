@@ -13,7 +13,7 @@ def print_info(running_loss, epoch, idx, dataset_len, config):
 
     # Prints loss
     print(
-        "[%d  %d epoch] [%d, %5d] loss: %.3f"
+        "Epoch : %d/%d, iteration: %d/%5d || loss: %.3f"
         % (epoch, config.n_epoch, idx + 1, dataset_len / config.mini_batch_size, running_loss / config.loss_period,)
     )
 
@@ -37,8 +37,8 @@ def print_info_small_dataset(running_loss, iterations, epoch, idx, dataset_len, 
 
     # Prints loss
     print(
-        "[%d  %d epoch] [%d, %5d] loss: %.3f"
-        % (epoch, config.n_epoch, idx + 1, dataset_len / config.mini_batch_size, running_loss / config.loss_period,)
+        "Epoch: %d/%d || loss: %.3f"
+        % (epoch, config.n_epoch, running_loss / config.loss_period,)
     )
 
     return 0.0, 0

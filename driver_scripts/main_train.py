@@ -1,7 +1,7 @@
 from motion_blur.libs.nn.motion_net import MotionNet
 from motion_blur.libs.configs.read_config import parse_config
-from motion_blur.libs.nn.train import run_train
-from motion_blur.libs.nn.train_small import run_train_small
+from motion_blur.libs.engine.train_classification import run_train_small_classification
+from motion_blur.libs.engine.train_regression import run_train_small_regression
 from motion_blur.libs.utils.nn_utils import print_training_info
 from motion_blur.libs.utils.nn_utils import log_mlflow_param
 from pathlib import Path
@@ -21,6 +21,10 @@ def parse_args():
 
 
 def run_train(args):
+    '''
+        Entry point for the training
+    '''
+
     # Configs
     cfg = parse_config(args.config_path)
 
@@ -62,7 +66,10 @@ def run_train(args):
 
     # Training loop
     if cfg.small_dataset:
-        run_train_small(cfg, ckp_path, save_path, net, net_type, optimizer, criterion)
+        if cfg.regression:
+            run_train_small_regression(cfg, ckp_path, save_path, net, net_type, optimizer, criterion)
+        else:
+            run_train_small_classification(cfg, ckp_path, save_path, net, net_type, optimizer, criterion)
     else:
         run_train(cfg, ckp_path, save_path, net, net_type, criterion)
 
