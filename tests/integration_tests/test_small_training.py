@@ -13,4 +13,5 @@ def test_train_classification_network():
     args = mock_args
     args.config_path = config_path
 
+    # Launch training
     run_train(args)
