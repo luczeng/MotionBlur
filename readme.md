@@ -13,6 +13,8 @@ The library is coded in Python3.
 
 Contributions are more than welcome, either on on the image processing (modeling of complex blurs) or the blur estimation.
 
+![alt text](imgs/Reds_deconv.png)
+
 # News
 - As of May 2020, the project restarts! We move from tensorflow to pytorch. We will extend the motion blur models to more complicated motions than simply linear movements. We will also tackle the space variant case. We plan to extend to TV deblurring. 
 

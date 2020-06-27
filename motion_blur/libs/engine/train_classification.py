@@ -63,7 +63,11 @@ def run_train_small_classification(cfg, ckp_path, save_path, net, net_type, opti
                 running_loss, iterations = print_info_small_dataset(
                     running_loss, iterations, epoch, idx, len(dataset), cfg
                 )
-                print("\t\t 1st sample estimates/gt:", np.argmax(x[0].cpu().detach().numpy()), batch["gt"][0].cpu().numpy())
+                print(
+                    "\t\t 1st sample estimates/gt:",
+                    np.argmax(x[0].cpu().detach().numpy()),
+                    batch["gt"][0].cpu().numpy(),
+                )
 
             # Run evaluation
             if (epoch % cfg.validation_period == cfg.validation_period - 1) & epoch != 0:

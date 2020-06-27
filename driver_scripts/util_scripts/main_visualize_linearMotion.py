@@ -10,7 +10,7 @@ from matplotlib.gridspec import GridSpec
 """
 # Parameters
 NAngles = 10
-L = 21
+L = 41
 
 # Generate blur
 img = cv2.imread("imgs/lena.tiff", 0)
