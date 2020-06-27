@@ -16,8 +16,14 @@ setup(
         "wget",
     ],
     extras_require={
-        "TEST_SUITE": ["pytest", "black==19.10b0", "pylint", "flake8"],
-        "DEVELOP": ["Tensorboard", "mlflow"],
+        "TEST_SUITE": [
+            "pytest",
+            "black==19.10b0",
+            "pylint",
+            "flake8",
+            "mlflow",
+        ],  # keep mlflow here until mlflow is not needed in tests
+        "DEVELOP": ["mlflow"],
     },
     packages=find_packages(),
 )

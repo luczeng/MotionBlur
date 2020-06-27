@@ -21,9 +21,9 @@ def parse_args():
 
 
 def run_train(args):
-    '''
+    """
         Entry point for the training
-    '''
+    """
 
     # Configs
     cfg = parse_config(args.config_path)
