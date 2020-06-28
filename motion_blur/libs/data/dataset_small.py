@@ -98,7 +98,7 @@ class DatasetOneImageClassification(Dataset):
         self.n_lengths = len(self.length_list)
 
         # List of angles
-        self.angle_list = torch.linspace(0, 180, n_angles).float()  # odd values
+        self.angle_list = torch.linspace(0, 179, n_angles).float()  # odd values
         self.n_angles = n_angles
 
         # Prepare image

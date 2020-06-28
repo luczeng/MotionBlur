@@ -57,11 +57,11 @@ def evaluate_one_image_classification(net, img_path, net_type, n_angles=60, L_mi
 
     img = io.imread(img_path, as_gray=as_gray)
 
-    angle_list = torch.linspace(0, 180, n_angles).float()  # odd values
+    angle_list = torch.linspace(0, 179, n_angles).float()  # odd values
     L = L_min
 
     angle_loss = 0
-    for angle in angle_list:
+    for idx, angle in enumerate(angle_list):
 
         # Blur image
         kernel = motion_kernel(angle, int(L))
@@ -80,6 +80,8 @@ def evaluate_one_image_classification(net, img_path, net_type, n_angles=60, L_mi
         x = net.forward(blurred_img)
 
         # Calculate erro
+        print(angle_list[torch.argmax(x[0])].item(), idx, angle)
+
         angle_loss += torch.abs(angle_list[torch.argmax(x)] - angle).detach()
 
     angle_loss /= n_angles

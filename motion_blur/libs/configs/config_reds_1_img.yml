@@ -9,14 +9,14 @@ TRAIN:
     SAVE_PATH: 'training_results/reds_small/run5'
     SMALL_DATASET: 1
     N_EPOCH: 10000
-    LR: 0.1
+    LR: 0.0001
     L_max : 11
     L_min : 11
-    n_angles: 180
+    n_angles: 90
     n_lengths : 1
     LOSS_PERIOD: 10
     MINI_BATCH_SIZE: 4
-    SAVING_EPOCH: 100000
+    SAVING_EPOCH: 1000
     LOAD_CHECKPOINT: 1
 VALIDATION:
     USE_VALIDATION: 1

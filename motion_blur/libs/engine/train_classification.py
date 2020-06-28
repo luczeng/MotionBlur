@@ -39,6 +39,7 @@ def run_train_small_classification(cfg, ckp_path, save_path, net, net_type, opti
         for idx, batch in enumerate(dataloader):
 
             # GPU
+            net.train()
             net.zero_grad()
             optimizer.zero_grad()
 
@@ -68,9 +69,20 @@ def run_train_small_classification(cfg, ckp_path, save_path, net, net_type, opti
                     np.argmax(x[0].cpu().detach().numpy()),
                     batch["gt"][0].cpu().numpy(),
                 )
+                print(
+                    "\t\t 2st sample estimates/gt:",
+                    np.argmax(x[1].cpu().detach().numpy()),
+                    batch["gt"][1].cpu().numpy(),
+                )
+                print(
+                    "\t\t 3st sample estimates/gt:",
+                    np.argmax(x[2].cpu().detach().numpy()),
+                    batch["gt"][2].cpu().numpy(),
+                )
 
             # Run evaluation
             if (epoch % cfg.validation_period == cfg.validation_period - 1) & epoch != 0:
+                net.eval()
                 angle_loss = evaluate_one_image_classification(
                     net, cfg.val_small_dataset_path, net_type, cfg.n_angles, cfg.L_min, cfg.L_max, cfg.as_gray
                 )

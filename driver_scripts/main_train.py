@@ -4,6 +4,7 @@ from motion_blur.libs.engine.train_classification import run_train_small_classif
 from motion_blur.libs.engine.train_regression import run_train_small_regression
 from motion_blur.libs.utils.nn_utils import print_training_info
 from motion_blur.libs.utils.nn_utils import log_mlflow_param
+from motion_blur.libs.nn.models import initalize_resnet
 from pathlib import Path
 import argparse
 import torch
@@ -34,17 +35,20 @@ def run_train(args):
     save_path = Path(cfg.save_path) / "final_model.pth"
 
     # Net
+    import sys, torchsummary
+    net = initalize_resnet(cfg.n_angles, False, True)
+    print(net)
     reds_size = [720, 1280]
-    net = MotionNet(
-        cfg.n_layers,
-        cfg.n_sublayers,
-        cfg.n_features_first_layer,
-        reds_size,
-        cfg.as_gray,
-        cfg.regression,
-        cfg.n_angles,
-        cfg.n_lengths,
-    )
+    # net = MotionNet(
+        # cfg.n_layers,
+        # cfg.n_sublayers,
+        # cfg.n_features_first_layer,
+        # reds_size,
+        # cfg.as_gray,
+        # cfg.regression,
+        # cfg.n_angles,
+        # cfg.n_lengths,
+    # )
 
     # Determine type(GPU or not)
     if torch.cuda.is_available():
@@ -64,6 +68,7 @@ def run_train(args):
     print_training_info(net, reds_size)
     log_mlflow_param(cfg)
 
+    # sys.exit(0)
     # Training loop
     if cfg.small_dataset:
         if cfg.regression:
