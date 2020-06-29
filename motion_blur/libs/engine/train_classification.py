@@ -19,6 +19,8 @@ def run_train_small_classification(cfg, ckp_path, save_path, net, net_type, opti
         :param save_path path to final model
         :param net
         :param net_type cpu or gpu
+        :param optimizer
+        :param criterion
     """
 
     # Resume

@@ -1,16 +1,33 @@
+NET:
+    NET_TYPE: "resnet"
+    N_LAYERS: 5
+    N_SUBLAYERS: 2
+    N_FEATURES_FIRST_LAYER: 32
+    AS_GRAY : 0
+    REGRESSION: 0
 TRAIN:
-    TRAIN_DATASET_PATH: 'datasets/reds/train_reds'
-    SAVE_PATH: 'training_results/reds/run1'
-    N_EPOCH: 100
-    LR: 0.01
-    L_max : 10
-    L_min : 2
+    TRAIN_DATASET_PATH: 'datasets/train_reds'
+    SAVE_PATH: 'training_results/reds_small/run5'
+    SMALL_DATASET: 1
+    N_EPOCH: 10000
+    LR: 0.0001
+    L_max : 11
+    L_min : 11
+    n_angles: 90
+    n_lengths : 1
     LOSS_PERIOD: 10
-    MINI_BATCH_SIZE: 16
+    MINI_BATCH_SIZE: 4
+    SAVING_EPOCH: 1000
+    LOAD_CHECKPOINT: 1
 VALIDATION:
+    USE_VALIDATION: 1
     VALIDATION_PERIOD: 100
-    SHARP_VAL_DATASET_PATH:   'datasets/reds/val_reds'
-    BLURRED_VAL_DATASET_PATH: 'datasets/reds/val_blurred'
+    SHARP_VAL_DATASET_PATH: 'datasets/reds/val_reds'
+    BLURRED_VAL_DATASET_PATH: "datasets/reds/val_blurred_classification" 
+    VAL_SMALL_DATASET_PATH: ~
+    VAL_N_ANGLES: 60
 TEST:
-    TEST_DATASET_PATH: 'datasets/reds/val_blurred'
+    TEST_DATASET_PATH: 'datasets/reds/val_blurred_classification'
     WEIGHT_PATH: 'models'
+MLFLOW:
+    LOG_WEIGHTS: 0
