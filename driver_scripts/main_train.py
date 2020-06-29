@@ -36,10 +36,10 @@ def run_train(args):
     save_path = Path(cfg.save_path) / "final_model.pth"
 
     # Net
+    reds_size = [720, 1280]  # TODO: put this in const file
     if cfg.net_type == 'resnet':
         net = initalize_resnet(cfg.n_angles, False, True)
     else:
-        reds_size = [720, 1280]
         net = MotionNet(
         cfg.n_layers,
         cfg.n_sublayers,

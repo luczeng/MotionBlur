@@ -20,7 +20,9 @@ class DatasetClassification(Dataset):
             self.length_list = torch.arange(L_min, L_max, 2).float()  # odd values
         else:
             self.length_list = [torch.tensor(L_min).float()]
+        self.n_lengths = len(self.length_list)
         self.angle_list = torch.linspace(0, 179, n_angles).float()  # odd values
+        self.n_angles = n_angles
         self.as_gray = as_gray
 
     def __getitem__(self, idx):
@@ -33,10 +35,11 @@ class DatasetClassification(Dataset):
         L = self.length_list[idx_L]
         theta = self.angle_list[idx_theta]
 
-        gt = torch.cat((theta, L)).type(self.net_type)
+        # gt = torch.cat((theta.reshape(1), L.reshape(1))).type(self.net_type)
+        gt = torch.tensor(idx_theta).type(torch.cuda.LongTensor)
 
         # Blur image
-        kernel = motion_kernel(theta, L)
+        kernel = motion_kernel(theta, int(L))
         H = Convolution(kernel)
         if self.as_gray:
             img = torch.tensor((H * img)[None, :, :]).type(self.net_type)

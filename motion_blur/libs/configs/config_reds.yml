@@ -6,9 +6,9 @@ NET:
     AS_GRAY : 0
     REGRESSION: 0
 TRAIN:
-    TRAIN_DATASET_PATH: 'datasets/train_reds'
+    TRAIN_DATASET_PATH: 'datasets/reds/train_reds'
     SAVE_PATH: 'training_results/reds_small/run5'
-    SMALL_DATASET: 1
+    SMALL_DATASET: 0
     N_EPOCH: 10000
     LR: 0.0001
     L_max : 11
@@ -21,7 +21,7 @@ TRAIN:
     LOAD_CHECKPOINT: 1
 VALIDATION:
     USE_VALIDATION: 1
-    VALIDATION_PERIOD: 100
+    VALIDATION_PERIOD: 10
     SHARP_VAL_DATASET_PATH: 'datasets/reds/val_reds'
     BLURRED_VAL_DATASET_PATH: "datasets/reds/val_blurred_classification" 
     VAL_SMALL_DATASET_PATH: ~

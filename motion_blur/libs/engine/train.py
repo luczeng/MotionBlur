@@ -1,8 +1,9 @@
-from torch.utils.data.dataset import DataLoader
+from torch.utils.data import DataLoader
 from motion_blur.libs.utils.nn_utils import load_checkpoint, save_checkpoint, define_checkpoint
 from motion_blur.libs.metrics.metrics import run_validation_classification
 from motion_blur.libs.data.dataset import DatasetClassification
 from motion_blur.libs.utils.training_utils import print_info
+import numpy as np
 import torch
 import mlflow
 
@@ -27,7 +28,7 @@ def run_train_full_classification(cfg, ckp_path, save_path, net, net_type, optim
         start = 0
 
     # Data
-    dataset = DatasetClassification(cfg.train_dataset_path, cfg.L_min, cfg.L_max, net_type)
+    dataset = DatasetClassification(cfg.train_dataset_path, cfg.L_min, cfg.L_max, cfg.n_angles, net_type, cfg.as_gray)
     dataloader = DataLoader(dataset, batch_size=cfg.mini_batch_size, shuffle=True)
 
     # Training loop
@@ -52,11 +53,15 @@ def run_train_full_classification(cfg, ckp_path, save_path, net, net_type, optim
             # Print loss
             if idx % cfg.loss_period == (cfg.loss_period - 1):
                 running_loss = print_info(running_loss, epoch, idx, len(dataset), cfg)
-                print("\t\t", x[0, :].cpu().detach().numpy(), batch["gt"][0, :].cpu().numpy())
+                print(
+                    "\t\t 1st sample estimates/gt:",
+                    np.argmax(x[0].cpu().detach().numpy()),
+                    batch["gt"][0].cpu().numpy(),
+                )
 
             # Run validation
-            if cfg.use_validation & idx % cfg.validation_period == cfg.validation_period - 1:
-                angle_error, length_error = run_validatio_classification(cfg, net, net_type)
+            if cfg.use_validation & (idx % cfg.validation_period == cfg.validation_period - 1):
+                angle_error, length_error = run_validation_classification(cfg, net, net_type)
                 print(f"\t\tValidation error: angle = {angle_error}, length = {length_error}")
 
             if epoch % cfg.saving_epoch == cfg.saving_epoch - 1:
